@@ -8,10 +8,10 @@
             <img src="{{ asset('images/logo.png-Photoroom.png') }}" alt="Logo Encontre Seu Guia" class="w-48 mt-2">
 
             <!-- Título -->
-            <h1 class="text-3xl font-bold text-[#348360] text-center" style="margin-top: -20px">Cadastro de</h1>
+            <h1 class="text-3xl font-bold text-[#348360] text-center" style="margin-top: -20px">Cadastro de Guias</h1>
 
             <!-- Descrição -->
-            <p class="text-gray-700 mb-2 text-center">
+            <p class="text-gray-600 mb-2 text-center">
                 Preencha os dados abaixo para criar sua conta.
             </p>
 
@@ -23,7 +23,7 @@
                 <div class="mb-6">
                     <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
                     <input type="email" id="email" name="email" required
-                           class="mt-1 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                 </div>
 
                 <!-- 2ª linha: Telefone e Data de Nascimento -->
@@ -31,13 +31,13 @@
                     <div>
                         <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
                         <input type="text" id="telefone" name="telefone" required
-                               class="mt-1 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                               class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                     </div>
 
                     <div>
                         <label for="data_nascimento" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
                         <input type="date" id="data_nascimento" name="data_nascimento" required
-                               class="mt-1 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                               class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                     </div>
                 </div>
 
@@ -46,13 +46,13 @@
                     <div>
                         <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
                         <input type="text" id="cpf" name="cpf" required
-                               class="mt-1 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                               class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                     </div>
 
                     <div>
                         <label for="cep" class="block text-sm font-medium text-gray-700">CEP</label>
                         <input type="text" id="cep" name="cep" required
-                               class="mt-1 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                               class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                     </div>
                 </div>
 
@@ -60,7 +60,7 @@
                 <div class="mb-6">
                     <label for="endereco" class="block text-sm font-medium text-gray-700">Endereço Completo</label>
                     <input type="text" id="endereco" name="endereco" required
-                           class="mt-1 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 block h-10 text-gray-600 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                 </div>
 
                 <!-- 5ª linha: Link Instagram e Link Facebook -->
@@ -68,13 +68,13 @@
                     <div>
                         <label for="link_insta" class="block text-sm font-medium text-gray-700">Link do Instagram</label>
                         <input type="url" id="link_insta" name="link_insta"
-                               class="mt-1 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                               class="mt-1 block h-10 text-gray-600 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                     </div>
 
                     <div>
                         <label for="link_face" class="block text-sm font-medium text-gray-700">Link do Facebook</label>
                         <input type="url" id="link_face" name="link_face"
-                               class="mt-1 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                               class="mt-1 block h-10 text-gray-600 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                     </div>
                 </div>
 
@@ -83,13 +83,13 @@
                     <div>
                         <label for="documento_frente" class="block text-sm font-medium text-gray-700">Documento Frente</label>
                         <input type="file" id="documento_frente" name="documento_frente" required
-                               class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-[#348360] file:text-white hover:file:bg-green-700 transition">
+                               class="mt-1 block w-full text-gray-600 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-[#348360] file:text-white hover:file:bg-green-700 transition">
                     </div>
 
                     <div>
                         <label for="documento_verso" class="block text-sm font-medium text-gray-700">Documento Verso</label>
                         <input type="file" id="documento_verso" name="documento_verso" required
-                               class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-[#348360] file:text-white hover:file:bg-green-700 transition">
+                               class="mt-1 block w-full text-gray-600 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-[#348360] file:text-white hover:file:bg-green-700 transition">
                     </div>
                 </div>
 
@@ -98,13 +98,13 @@
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700">Senha</label>
                         <input type="password" id="password" name="password" required
-                               class="mt-1 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                               class="mt-1 block h-10 text-gray-600 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                     </div>
 
                     <div>
                         <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Repetir Senha</label>
                         <input type="password" id="password_confirmation" name="password_confirmation" required
-                               class="mt-1 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                               class="mt-1 block h-10 w-full text-gray-600 rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                     </div>
                 </div>
 

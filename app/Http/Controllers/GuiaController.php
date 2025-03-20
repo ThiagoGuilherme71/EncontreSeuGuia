@@ -13,6 +13,9 @@ class GuiaController extends Controller
     {
         return view('guia-list');
     }
+    public function landingPage(){
+        return view('landingpage');
+    }
 
     /**
      * Show the form for creating a new resource.

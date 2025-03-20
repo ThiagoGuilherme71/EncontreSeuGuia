@@ -50,10 +50,10 @@
                 <div id="popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div class="bg-white rounded-lg p-6 w-[350px] shadow-lg text-center">
                         <h2 class="text-xl font-bold mb-4 text-gray-600">Escolha uma opção</h2>
-                        <button id="signupGuia" onclick="redirectCreateAccount('0')" class="bg-[#348360] text-white px-4 py-2 rounded mb-2 w-full">
+                        <button id="signupGuia" onclick="redirectCreateAccount(0)" class="bg-[#348360] text-white px-4 py-2 rounded mb-2 w-full">
                             Criar Conta para Guia
                         </button>
-                        <button id="signupTrilheiro"  onclick="redirectCreateAccount('1')" class="bg-[#348360] text-white px-4 py-2 rounded  w-full">
+                        <button id="signupTrilheiro"  onclick="redirectCreateAccount(1)" class="bg-[#348360] text-white px-4 py-2 rounded  w-full">
                             Criar Conta para Trilheiro
                         </button>
                         <button id="closePopup" class=" mt-4 px-4 py-2 rounded  text-red-500">
@@ -142,10 +142,11 @@
     });
 
     function redirectCreateAccount(idChoice){
+        // 0 = Guia / 1 = Trilheiro
         if (idChoice === 0){
-            window.location.href = "/";
+            window.location.href = "/signup-guia";
         }else{
-            window.location.href = "/";
+            window.location.href = "/signup";
         }
     }
 

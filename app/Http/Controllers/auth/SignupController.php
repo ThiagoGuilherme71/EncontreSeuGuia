@@ -8,7 +8,7 @@ class SignupController extends Controller
 {
     public function showSignupForm()
     {
-        return view('Signup.signup.bl');
+        return view('Signup.signup');
     }
 
     public function signup(Request $request)
