@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('telefone', 15); // Campo telefone
+            $table->date('data_nascimento'); // Campo data_nascimento
+            $table->string('cpf', 11)->unique(); // Campo cpf
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
