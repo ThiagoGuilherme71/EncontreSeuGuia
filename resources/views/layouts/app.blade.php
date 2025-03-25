@@ -1,24 +1,24 @@
-
-
-
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Meu Projeto')</title>
     <link href="{{ asset('css/output.css') }}" rel="stylesheet"> <!-- Tailwind CSS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="m-0 p-0 flex flex-col min-h-screen bg-gray-100 font-sans">
 <header class="fixed top-0 left-0 w-full bg-white/70 backdrop-blur-md shadow z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
+        <div class="flex items-center justify-between h-24">
 
             <!-- LOGO -->
             <div class="flex-shrink-0 flex items-center">
                 <a href="{{ url('/') }}">
-                    <img class="h-12 w-auto" src="{{ asset('images/logo.png') }}" alt="Logo Encontre seu Guia">
+                    <img class="h-24 w-auto" src="{{ asset('images/logo.png-Photoroom.png') }}" alt="Logo Encontre seu Guia">
                 </a>
             </div>
 
@@ -61,12 +61,38 @@
     @yield('content')
 </main>
 
-
 <!-- Rodapé -->
-<footer class="bg-gray-800 text-white py-4">
-    <div class="w-full text-center">
-        <p>&copy; {{ date('Y') }} Meu Projeto. Todos os direitos reservados.</p>
+<footer class="bg-gray-800 text-white py-6 galery-footer">
+    <div class="container mx-auto flex flex-col md:flex-row gap-8 md:gap-0">
+
+        <!-- Logo (Esquerda) -->
+        <div class="w-48 flex justify-center md:justify-start ">
+            <img src="{{ asset('images/logo.png-Photoroom.png') }}" alt="Logo Encontre seu Guia" class="galery-footer-logo-img" style="width: 9rem">
+        </div>
+
+        <!-- Texto Central -->
+        <div class=" text-center galery-footer-text">
+            <p class="mb-2 galery-footer-text-mission">
+                Encontre seu Guia – Conectando você à natureza com segurança e experiência. Encontre guias qualificados,
+                explore trilhas incríveis e viva aventuras inesquecíveis.
+            </p>
+            <p class="text-green-400 galery-footer-slogan">🌿 Descubra. Conecte-se. Explore. 🌿</p>
+        </div>
+
+        <!-- Direitos e Contato (Direita) -->
+        <div class=" text-center md:text-right galery-footer-contact items-right">
+            <p class="galery-footer-rights">© 2025 Encontre seu Guia. Todos os direitos reservados.</p>
+            <div class="mt-2 galery-footer-info">
+                <p>📍 contato@encontreseuguia.com</p>
+                <p>📞 (XX) XXXXX-XXXX</p>
+            </div>
+        </div>
+
     </div>
 </footer>
+
+
+
+
 </body>
 </html>

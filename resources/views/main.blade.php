@@ -5,7 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Laravel</title>
         <link href="{{ asset('css/output.css') }}" rel="stylesheet">
+
         <link rel="stylesheet" href="/">
+
     </head>
     <body class="h-screen w-screen bg-gray-100 font-sans">
 
@@ -19,17 +21,21 @@
             <!-- Formulário -->
             <form action="{{ route('login.submit') }}" method="POST" class="w-full max-w-sm">
                 @csrf
+                @if ($errors->has('login'))
+                    <div class="mb-4 bg-gray-100 w-24 font-bold text-red-500 text-sm rounded text-center">{{ $errors->first('login') }}</div>
+                @endif
+
 
                 <div class="mb-4">
-                    <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
+                    <label for="email" class="block  text-sm font-medium text-gray-700">E-mail</label>
                     <input type="email" id="email" name="email" required
-                           class="mt-1 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 block h-10 text-black w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                 </div>
 
                 <div class="mb-4">
-                    <label for="password" class="block text-sm font-medium text-gray-700">Senha</label>
-                    <input type="password" id="password" name="password" required
-                           class="mt-1 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                    <label for="password" class="block  text-sm font-medium text-gray-700">Senha</label>
+                    <input type="password" id="password" minlength="6" name="password" required
+                           class="mt-1 block h-10 w-full text-black rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                 </div>
 
                 <div class="mb-4 text-right">
@@ -42,7 +48,7 @@
                 </button>
 
                 <div class="text-right mt-4">
-                    <button id="createAccount" class="bg-[#A27738] px-6 py-2 text-white font-bold rounded hover:bg-[#348360] transition">
+                    <button type="button" id="createAccount" class="bg-[#A27738] px-6 py-2 text-white font-bold rounded hover:bg-[#348360] transition">
                         Criar Conta
                     </button>
                 </div>
@@ -106,7 +112,7 @@
 
             setTimeout(() => {
                 // Faz uma requisição AJAX para obter o componente
-                fetch('/guias-list')
+                fetch('{{ route("guia-list") }}')
                     .then(response => response.text())
                     .then(html => {
                         rightSide.innerHTML = html;

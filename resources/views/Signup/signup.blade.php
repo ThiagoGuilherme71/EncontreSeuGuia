@@ -16,17 +16,31 @@
             </p>
 
             <!-- Formulário -->
-            <form action="#" method="POST" enctype="multipart/form-data" class="w-full max-w-lg">
+            <form action="{{route('signup.submit')}}" method="POST" enctype="multipart/form-data" class="w-full max-w-lg">
                 @csrf
 
-                <!-- 1ª linha: E-mail -->
+                <!-- 1ª linha: Nome Completo -->
+                <div class="mb-6">
+                    <label for="nome" class="block text-sm font-medium text-gray-700">Nome Completo</label>
+                    <input type="text" id="nome" name="nome" required
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                </div>
+
+                <!-- 2ª linha: E-mail -->
                 <div class="mb-6">
                     <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
                     <input type="email" id="email" name="email" required
                            class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                 </div>
 
-                <!-- 2ª linha: Telefone e Data de Nascimento -->
+                <!-- 3ª linha: CPF -->
+                <div class="mb-6">
+                    <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
+                    <input type="text" id="cpf" name="cpf" required
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                </div>
+
+                <!-- 4ª linha: Telefone e Data de Nascimento -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                         <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
@@ -41,24 +55,17 @@
                     </div>
                 </div>
 
-                <!-- 3ª linha: CPF -->
-                <div class="mb-6">
-                    <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
-                    <input type="text" id="cpf" name="cpf" required
-                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
-                </div>
-
-                <!-- 4ª linha: Senha -->
+                <!-- 5ª linha: Senha -->
                 <div class="mb-6">
                     <label for="password" class="block text-sm font-medium text-gray-700">Senha</label>
-                    <input type="password" id="password" name="password" required
+                    <input type="password" minlength="6" id="password" name="password" required
                            class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                 </div>
 
-                <!-- 5ª linha: Repetir Senha -->
+                <!-- 6ª linha: Repetir Senha -->
                 <div class="mb-6">
                     <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Repetir Senha</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" required
+                    <input type="password" minlength="6" id="password_confirmation" name="password_confirmation" required
                            class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
                 </div>
 
@@ -74,6 +81,7 @@
                     </a>
                 </div>
             </form>
+
         </div>
 
         <!-- LADO DIREITO -->
