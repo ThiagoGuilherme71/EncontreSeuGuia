@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="flex w-full" >
+    <div class="flex w-full h-full" >
         <!-- LADO ESQUERDO -->
         <div class="w-2/3 h-screen bg-[#E3CDA8] flex flex-col justify-center items-center p-8" >
             <!-- Logo -->
@@ -20,6 +20,11 @@
                 @csrf
 
                 <!-- 1ª linha: E-mail -->
+                <div class="mb-6">
+                    <label for="nome" class="block text-sm font-medium text-gray-700">Nome completo</label>
+                    <input type="text" id="nome" name="nome" required
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                </div>
                 <div class="mb-6">
                     <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
                     <input type="email" id="email" name="email" required
