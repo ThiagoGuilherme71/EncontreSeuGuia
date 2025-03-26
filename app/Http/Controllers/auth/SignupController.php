@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Guia;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -49,9 +50,6 @@ class SignupController extends Controller
 
     public function signupGuia(Request $request)
     {
-<<<<<<< HEAD
-        // Lógica para processar o cadastro do guia
-=======
         $request->validate([
             'nome' => 'required',
             'email' => 'required|email|unique:guias,email',
@@ -86,7 +84,6 @@ class SignupController extends Controller
         auth()->login($guia);
         // tem que mudar essa view e criar um dash do guia
         return redirect()->route('landing-page')->with('success', 'Cadastro realizado com sucesso!');
->>>>>>> feat/landingPage
     }
 
 }

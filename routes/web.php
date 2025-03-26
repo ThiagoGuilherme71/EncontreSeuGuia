@@ -1,12 +1,5 @@
 <?php
 
-<<<<<<< HEAD
-use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
-=======
 use App\Http\Controllers\auth\LoginController;
 use App\Http\Controllers\auth\SignupController;
 use App\Http\Controllers\GuiaController;
@@ -30,4 +23,3 @@ Route::post('/signup-guia', [SignupController::class, 'signupGuia'])->name('sign
 Route::get('/guias-list', [GuiaController::class, 'index'])->name('guia-list');
 //Lading page
 Route::get('/landing-page', [GuiaController::class, 'landingPage'])->name('landing-page');
->>>>>>> feat/landingPage
