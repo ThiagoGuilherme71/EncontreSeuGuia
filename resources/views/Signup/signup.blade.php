@@ -1,6 +1,12 @@
-@extends('layouts.app')
-
-@section('content')
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Guia - Encontre seu Guia</title>
+    <link href="{{ asset('css/output.css') }}" rel="stylesheet"> <!-- Tailwind CSS -->
+</head>
+<body class="m-0 p-0 flex flex-col min-h-screen bg-gray-100 font-sans">
     <div class="flex w-full">
         <!-- LADO ESQUERDO -->
         <div class="w-2/3 h-screen bg-[#E3CDA8] flex flex-col justify-center items-center p-8">
@@ -100,4 +106,34 @@
             </div>
         </div>
     </div>
-@endsection
+    <!-- Rodapé -->
+    <footer class="bg-gray-800 text-white py-6 galery-footer">
+        <div class="container mx-auto flex flex-col md:flex-row gap-8 md:gap-0">
+
+            <!-- Logo (Esquerda) -->
+            <div class="w-48 flex justify-center md:justify-start ">
+                <img src="{{ asset('images/logo.png-Photoroom.png') }}" alt="Logo Encontre seu Guia" class="galery-footer-logo-img" style="width: 9rem">
+            </div>
+
+            <!-- Texto Central -->
+            <div class=" text-center galery-footer-text">
+                <p class="mb-2 galery-footer-text-mission">
+                    Encontre seu Guia – Conectando você à natureza com segurança e experiência. Encontre guias qualificados,
+                    explore trilhas incríveis e viva aventuras inesquecíveis.
+                </p>
+                <p class="text-green-400 galery-footer-slogan">🌿 Descubra. Conecte-se. Explore. 🌿</p>
+            </div>
+
+            <!-- Direitos e Contato (Direita) -->
+            <div class=" text-center md:text-right galery-footer-contact items-right">
+                <p class="galery-footer-rights">© 2025 Encontre seu Guia. Todos os direitos reservados.</p>
+                <div class="mt-2 galery-footer-info">
+                    <p>📍 contato@encontreseuguia.com</p>
+                    <p>📞 (XX) XXXXX-XXXX</p>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+</body>
+</html>

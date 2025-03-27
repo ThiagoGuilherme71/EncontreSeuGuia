@@ -14,28 +14,34 @@ class LoginController extends Controller
         return view('main');
     }
 
-    // Processa o login
     public function login(Request $request)
     {
-        // Validação dos campos
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:6',
         ]);
 
-        // Tentativa de login
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->route('landing-page'); // Redireciona após login bem-sucedido
+        // Tenta autenticar como trilheiro
+        if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password])) {
+            return redirect()->route('landing-page');
         }
 
-        // Se falhar, retorna com erro
+        // Se falhar, tenta autenticar como guia
+        if (Auth::guard('guia')->attempt(['email' => $request->email, 'password' => $request->password])) {
+            return redirect()->route('landing-page');
+        }
+
         return back()->withErrors(['login' => 'Credenciais inválidas'])->onlyInput('email');
     }
 
-    // Logout do usuário
     public function logout()
     {
-        Auth::logout();
+        if (Auth::guard('guia')->check()) {
+            Auth::guard('guia')->logout();
+        } else {
+            Auth::guard('web')->logout();
+        }
+
         return redirect()->route('login')->with('success', 'Você saiu com sucesso.');
     }
 

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('telefone');
             $table->string('cep')->nullable();
             $table->string('endereco')->nullable();
-            $table->string('linkInstagram')->nullable();
-            $table->string('linkFacebook')->nullable();
+            $table->string('link_instagram')->nullable();
+            $table->string('link_facebook')->nullable();
             $table->string('doc_frente')->nullable();
             $table->string('doc_verso')->nullable();
             $table->string('password');
