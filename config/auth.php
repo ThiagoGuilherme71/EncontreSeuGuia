@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'guia' => [
+            'driver' => 'session',
+            'provider' => 'guias',
+        ],
     ],
 
     /*
@@ -65,11 +70,19 @@ return [
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
 
+
+        'guias' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Guia::class, // Modelo dos guias
+        ],
+
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
     ],
+
+
 
     /*
     |--------------------------------------------------------------------------
