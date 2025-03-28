@@ -32,6 +32,7 @@
 
         <!-- Segunda Seção: Principais Trilhas (Carrossel) -->
         <section
+            id="principaisTrilhas"
             x-data="carouselTrilhas()"
             class="relative h-screen bg-[#A27738] bg-opacity-90 overflow-hidden"
         >
@@ -91,7 +92,7 @@
 
 
         <!-- Terceira Seção: Dicas & Galeria -->
-        <section class="bg-[#348360] h-screen py-16 px-4 text-white">
+        <section id="dicasGaleria" class="bg-[#348360] h-screen py-16 px-4 text-white">
             <div class="max-w-6xl mx-auto">
 
                 <!-- Título -->
@@ -165,7 +166,7 @@
             </div>
         </section>
 
-        <section class="relative overflow-hidden bg-[#E3CDA8] py-8">
+        <section id="principaisGuias" class="relative overflow-hidden bg-[#E3CDA8] py-8">
 
             <div class="w-full max-w-6xl mx-auto" x-data="carousel3()">
 
