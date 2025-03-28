@@ -27,13 +27,13 @@
                 <a href="#" class="text-gray-800 hover:text-[#348360] text-sm font-semibold transition">
                     Agendamentos
                 </a>
-                <a href="#" class="text-gray-800 hover:text-[#348360] text-sm font-semibold transition">
+                <a href="#principaisTrilhas" class="text-gray-800 hover:text-[#348360] text-sm font-semibold transition">
                     Trilhas Disponíveis
                 </a>
-                <a href="#" class="text-gray-800 hover:text-[#348360] text-sm font-semibold transition">
+                <a href="#principaisGuias" class="text-gray-800 hover:text-[#348360] text-sm font-semibold transition">
                     Guias
                 </a>
-                <a href="#" class="text-gray-800 hover:text-[#348360] text-sm font-semibold transition">
+                <a href="#dicasGaleria" class="text-gray-800 hover:text-[#348360] text-sm font-semibold transition">
                     Dicas & Galeria
                 </a>
             </nav>
@@ -47,6 +47,13 @@
                               d="M5.121 17.804A13.937 13.937 0 0112 15c2.486 0 4.797.676 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
                 </a>
+                <a  href="{{route('logout')}}" class="flex items-center gap-2 text-black px-4 py-2 rounded-lg hover:bg-grey-200 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1"/>
+                    </svg>
+                    Sair
+                </a>
+
             </div>
 
             <!-- MENU MOBILE FUTURAMENTE (opcional) -->
