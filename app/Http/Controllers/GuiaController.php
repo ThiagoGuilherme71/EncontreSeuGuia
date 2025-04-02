@@ -11,7 +11,7 @@ class GuiaController extends Controller
      */
     public function index()
     {
-        return view('guia-list');
+        return view('Guia.main-guia');
     }
     public function landingPage(){
         return view('landingpage');
