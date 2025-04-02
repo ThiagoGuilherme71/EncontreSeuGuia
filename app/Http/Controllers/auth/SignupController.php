@@ -50,20 +50,20 @@ class SignupController extends Controller
 
     public function signupGuia(Request $request)
     {
-        $request->validate([
-            'nome' => 'required',
-            'email' => 'required|email|unique:guias,email',
-            'telefone' => 'required|string|max:18',
-            'data_nascimento' => 'required|date',
-            'cpf' => 'required|string|unique:guias,cpf',
-            'cep' => 'required|string|unique:guias,cep',
-            'endereco' => 'required',
-            'link_instagram' => 'required',
-            'link_facebook' => 'required',
-            'doc_frente' => 'required',
-            'doc_verso' => 'required',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+//        $request->validate([
+//            'nome' => 'required',
+//            'email' => 'required|email|unique:guias,email',
+//            'telefone' => 'required|string|max:18',
+//            'data_nascimento' => 'required|date',
+//            'cpf' => 'required|string|unique:guias,cpf',
+//            'cep' => 'required|string|unique:guias,cep',
+//            'endereco' => 'required',
+//            'link_instagram' => 'required',
+//            'link_facebook' => 'required',
+//            'doc_frente' => 'required',
+//            'doc_verso' => 'required',
+//            'password' => 'required|string|min:6|confirmed',
+//        ]);
 
 
         $guia = Guia::create([
