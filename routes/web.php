@@ -21,5 +21,7 @@ Route::get('/signup-guia', [SignupController::class, 'showGuiaSignupForm'])->nam
 Route::post('/signup-guia', [SignupController::class, 'signupGuia'])->name('signup.guia.submit');
 //Guia-List
 Route::get('/guia-dash', [GuiaController::class, 'index'])->name('guia-dash');
+Route::get('/guias-list', [GuiaController::class, 'list'])->name('guia-list');
+
 //Lading page
 Route::get('/landing-page', [GuiaController::class, 'landingPage'])->name('landing-page');
