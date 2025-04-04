@@ -83,7 +83,7 @@ class SignupController extends Controller
 
         auth()->login($guia);
         // tem que mudar essa view e criar um dash do guia
-        return redirect()->route('landing-page')->with('success', 'Cadastro realizado com sucesso!');
+        return redirect()->route('guia-dash')->with('success', 'Cadastro realizado com sucesso!');
     }
 
 }

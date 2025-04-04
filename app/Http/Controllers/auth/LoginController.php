@@ -28,7 +28,7 @@ class LoginController extends Controller
 
         // Se falhar, tenta autenticar como guia
         if (Auth::guard('guia')->attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->route('landing-page');
+            return redirect()->route('guia-dash');
         }
 
         return back()->withErrors(['login' => 'Credenciais inválidas'])->onlyInput('email');

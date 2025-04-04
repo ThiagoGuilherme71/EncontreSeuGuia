@@ -6,9 +6,20 @@
     <title>@yield('title', 'Meu Projeto')</title>
     <link href="{{ asset('css/output.css') }}" rel="stylesheet"> <!-- Tailwind CSS -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+
 
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+
+    <!-- FullCalendar principal -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+    <!-- Locale PT-BR -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/pt-br.global.min.js"></script>
+
 
     <script src="//unpkg.com/alpinejs" defer></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -72,6 +83,11 @@
     @yield('content')
 </main>
 
+
+
+
+</body>
+
 <!-- Rodapé -->
 <footer class="bg-gray-800 text-white py-6 galery-footer">
     <div class="container mx-auto flex flex-col md:flex-row gap-8 md:gap-0">
@@ -102,8 +118,4 @@
     </div>
 </footer>
 
-
-
-
-</body>
 </html>
