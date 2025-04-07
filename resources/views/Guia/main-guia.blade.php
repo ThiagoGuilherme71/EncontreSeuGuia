@@ -8,33 +8,55 @@
     <div class="container mx-auto mt-32 px-4">
 
         <!-- Agendamentos Futuros -->
-        <section class="bg-green-700 h-full text-white rounded-lg p-6 shadow-md">
+        <section class="bg-[#348360] h-full text-white rounded-lg p-6 shadow-md">
             <h2 class="text-xl font-semibold mb-4 text-center">Agendamentos Futuros</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-amber-100 text-gray-900 p-4 rounded-lg shadow-md">
-                    <h3 class="text-lg font-semibold">Fumaçinha</h3>
-                    <p class="text-sm">28/02/2025</p>
-                    <p class="text-sm">Thiago Guilherme</p>
-                    <p class="text-sm">Às 7:00</p>
-                    <p class="text-xs text-gray-700">Observações: @resource ../...</p>
-                    <button class="mt-2 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
-                        Conversar
-                    </button>
+            <!-- Carrossel -->
+            <div x-data="{ activeSlide: 0, cards: [1, 2, 3, 4, 5] }" class="relative w-full overflow-hidden">
+                <!-- Slider -->
+                <div class="flex items-center justify-center transition-transform duration-500 ease-in-out" :style="`transform: translateX(-${activeSlide * 100}%)`">
+                    <!-- Cards gerados dinamicamente -->
+                    <template x-for="card in cards" :key="card">
+                        <div class="flex-none w-full md:w-1/3 p-4">
+                            <div class="bg-gray-700 max-w-[300px] rounded-xl hover:bg-gray-900 hover:scale-110 duration-700 p-5">
+                                <figure class="w-10 h-10 p-2 bg-green-800 rounded-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
+                                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                                        <line x1="16" y1="2" x2="16" y2="6"/>
+                                        <line x1="8" y1="2" x2="8" y2="6"/>
+                                        <line x1="3" y1="10" x2="21" y2="10"/>
+                                    </svg>
+                                </figure>
+
+                                <h4 class="py-2 text-white font-bold">Fumaçinha</h4>
+                                <p class="text-base leading-7 text-white font-semibold space-y-4">28/02/2025</p>
+                                <p class="text-sm leading-7 text-slate-300 space-y-4">Thiago Guilherme - Às 7:00</p>
+                                <p class="text-xs leading-7 text-gray-400">Observações: @resource ../...</p>
+                                <div class="pt-5 pb-2 flex justify-center">
+                                    <button class="w-36 h-10 font-semibold rounded-md bg-green-600 hover:bg-green-700 text-white duration-500">
+                                        Conversar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
-                <div class="bg-amber-100 text-gray-900 p-4 rounded-lg shadow-md">
-                    <h3 class="text-lg font-semibold">Fumaçinha</h3>
-                    <p class="text-sm">28/02/2025</p>
-                    <p class="text-sm">Thiago Guilherme</p>
-                    <p class="text-sm">Às 7:00</p>
-                    <p class="text-xs text-gray-700">Observações: @resource ../...</p>
-                    <button class="mt-2 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
-                        Conversar
-                    </button>
-                </div>
+
+                <!-- Botão Anterior -->
+                <button @click="activeSlide = activeSlide > 0 ? activeSlide - 1 : cards.length - 3"
+                        class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-full hover:bg-gray-900 z-10">
+                    &#10094;
+                </button>
+
+                <!-- Botão Próximo -->
+                <button @click="activeSlide = activeSlide < cards.length - 3 ? activeSlide + 1 : 0"
+                        class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-full hover:bg-gray-900 z-10">
+                    &#10095;
+                </button>
             </div>
         </section>
+
         <!-- Editar Agenda -->
-        <section class="bg-green-800 h-full text-white rounded-lg p-6 shadow-md mt-8 mb-8" >
+        <section class="bg-[#348360] h-full text-white rounded-lg p-6 shadow-md mt-8 mb-8" >
             <h2 class="text-xl font-semibold mb-4 text-center">Editar Agenda</h2>
             <div class="flex justify-center">
                 <!-- Calendário -->

@@ -3,6 +3,7 @@
 use App\Http\Controllers\auth\LoginController;
 use App\Http\Controllers\auth\SignupController;
 use App\Http\Controllers\GuiaController;
+use App\Http\Controllers\TrilhaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,3 +26,6 @@ Route::get('/guias-list', [GuiaController::class, 'list'])->name('guia-list');
 
 //Lading page
 Route::get('/landing-page', [GuiaController::class, 'landingPage'])->name('landing-page');
+
+//Trilha
+Route::get('/trilhaSelecionada', [TrilhaController::class, 'trilhaSelecionada'])->name('trilhaSelecionada');
