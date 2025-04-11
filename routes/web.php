@@ -5,6 +5,7 @@ use App\Http\Controllers\auth\SignupController;
 use App\Http\Controllers\GuiaController;
 use App\Http\Controllers\TrilhaController;
 use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers\ClienteController;
 
 Route::get('/', function () {
     return view('main');
@@ -29,3 +30,9 @@ Route::get('/landing-page', [GuiaController::class, 'landingPage'])->name('landi
 
 //Trilha
 Route::get('/trilhaSelecionada', [TrilhaController::class, 'trilhaSelecionada'])->name('trilhaSelecionada');
+Route::get('/buscar-trilha', [TrilhaController::class, 'buscar'])->name('trilhas.buscar');
+Route::get('/trilhas/{nome}', [TrilhaController::class, 'exibir'])->name('trilhas.exibir');
+
+//ContaCliente
+Route::get('/conta', [ClienteController::class, 'index'])->name('conta.cliente');
+
