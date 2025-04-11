@@ -18,14 +18,15 @@
                 <p class="text-lg mb-8">Somos a maior rede de Guias Turísticos da Chapada Diamantina</p>
 
                 <!-- Campo de busca -->
-                <form action="#" method="GET" class="w-full max-w-md flex">
-                    <input type="text" placeholder="Informe a trilha desejada"
-                           class="flex-grow rounded-l-md px-4 py-2 text-gray-800 focus:outline-none">
-                    <button type="button" id="search"
+                <form action="{{ route('trilhas.buscar') }}" method="GET" class="w-full max-w-md flex">
+                    <input type="text" name="nome" placeholder="Informe a trilha desejada"
+                           class="flex-grow rounded-l-md px-4 py-2 text-gray-800 focus:outline-none" required>
+                    <button type="submit"
                             class="bg-[#348360] px-4 py-2 rounded-r-md hover:bg-green-700 transition">
                         🔍
                     </button>
                 </form>
+
             </div>
         </section>
 
