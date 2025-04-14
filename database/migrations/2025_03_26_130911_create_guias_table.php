@@ -14,19 +14,22 @@ return new class extends Migration
         Schema::create('guias', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->string('email')->unique();
+            $table->string('email');
             $table->string('telefone');
-            $table->string('cep')->nullable();
-            $table->string('endereco')->nullable();
+            $table->string('cep');
+            $table->string('endereco');
             $table->string('link_instagram')->nullable();
             $table->string('link_facebook')->nullable();
-            $table->string('doc_frente')->nullable();
-            $table->string('doc_verso')->nullable();
+            $table->string('doc_frente');
+            $table->string('doc_verso');
             $table->string('password');
+            $table->string('cpf');
             $table->date('data_nascimento');
-            $table->string('cpf')->unique();
             $table->timestamps();
         });
+
+
+
     }
 
     /**
