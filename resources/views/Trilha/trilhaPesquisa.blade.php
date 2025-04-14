@@ -6,14 +6,16 @@
         <div class="mt-20 max-w-4xl mx-auto px-4 py-10"> <!-- Adicionei `mt-20` para maior separação -->
 
             <div class="bg-gradient-to-br from-[#348360] via-[#4c826a] to-[#2e5f4d] p-10 rounded-2xl shadow-2xl mb-16 text-center">
-                <h1 class="text-3xl font-bold mb-6 text-white tracking-wide uppercase">{{ $trilha->nome }}</h1>
+                <h1 class="text-3xl font-bold mb-6 text-white tracking-wide uppercase"></h1>
                 <p class="text-lg text-gray-100 leading-relaxed mb-6">
-                    {{ $trilha->descricao }}
+                    4. Polling com AJAX
+                    Mais simples, menos performático: você pode fazer o cliente buscar mensagens
+                    novas a cada X segundos via AJAX. Não é "tempo real", mas funciona para protótipos ou ambientes mais simples.
                 </p>
                 <div class="flex justify-center items-center gap-4">
                     <span class="text-sm text-gray-200 font-semibold">Nível de dificuldade:</span>
                     <span class="bg-yellow-400 text-yellow-900 text-sm font-bold px-4 py-2 rounded-full shadow-lg transform transition hover:scale-105">
-            {{ $trilha->nivel }}
+            Díficil
         </span>
                 </div>
             </div>

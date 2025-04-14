@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class TrilhaController extends Controller
 {
     public function trilhaSelecionada(){
-        return view('trilhaPesquisa');
+        return view('Trilha.trilhaPesquisa');
     }
 
     public function buscar(Request $request)
