@@ -32,6 +32,8 @@ Route::get('/landing-page', [GuiaController::class, 'landingPage'])->name('landi
 Route::get('/trilhaSelecionada', [TrilhaController::class, 'trilhaSelecionada'])->name('trilhaSelecionada');
 Route::get('/buscar-trilha', [TrilhaController::class, 'buscar'])->name('trilhas.buscar');
 Route::get('/trilhas/{nome}', [TrilhaController::class, 'exibir'])->name('trilhas.exibir');
+Route::get('/trilhas/', [TrilhaController::class, 'create'])->name('trilhas.create');
+Route::post('/trilhas/', [TrilhaController::class, 'store'])->name('trilhas.store');
 
 //ContaCliente
 Route::get('/conta', [ClienteController::class, 'index'])->name('conta.cliente');

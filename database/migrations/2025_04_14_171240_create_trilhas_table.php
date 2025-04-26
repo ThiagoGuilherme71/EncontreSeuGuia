@@ -17,10 +17,11 @@ return new class extends Migration
             $table->text('descricao');
             $table->foreignId('id_dificuldade')->constrained('dificuldades');
             $table->string('cidade');
+            $table->string('foto')->nullable(); // Campo para salvar foto (pode ser opcional com nullable)
             $table->timestamps();
         });
-
     }
+
 
     /**
      * Reverse the migrations.
