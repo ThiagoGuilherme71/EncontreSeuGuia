@@ -21,20 +21,21 @@ Route::get('/signup', [SignupController::class, 'showSignupForm'])->name('signup
 Route::post('/signup', [SignupController::class, 'signup'])->name('signup.submit');
 Route::get('/signup-guia', [SignupController::class, 'showGuiaSignupForm'])->name('signup.guia');
 Route::post('/signup-guia', [SignupController::class, 'signupGuia'])->name('signup.guia.submit');
-//Guia-List
+//guia-List
 Route::get('/guia-dash', [GuiaController::class, 'index'])->name('guia-dash');
 Route::get('/guias-list', [GuiaController::class, 'list'])->name('guia-list');
 
 //Lading page
 Route::get('/landing-page', [GuiaController::class, 'landingPage'])->name('landing-page');
 
-//Trilha
+//trilha
 Route::get('/trilhaSelecionada', [TrilhaController::class, 'trilhaSelecionada'])->name('trilhaSelecionada');
 Route::get('/buscar-trilha', [TrilhaController::class, 'buscar'])->name('trilhas.buscar');
 Route::get('/trilhas/{nome}', [TrilhaController::class, 'exibir'])->name('trilhas.exibir');
 Route::get('/trilhas/', [TrilhaController::class, 'create'])->name('trilhas.create');
 Route::post('/trilhas/', [TrilhaController::class, 'store'])->name('trilhas.store');
 
-//ContaCliente
+//conta
 Route::get('/conta', [ClienteController::class, 'index'])->name('conta.cliente');
+Route::get('/conta-guia', [GuiaController::class, 'exibirConta'])->name('conta.guia');
 

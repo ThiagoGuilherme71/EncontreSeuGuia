@@ -11,7 +11,7 @@ class GuiaController extends Controller
      */
     public function index()
     {
-        return view('Guia.main-guia');
+        return view('guia.main-guia');
     }
     public function list()
     {
@@ -20,6 +20,28 @@ class GuiaController extends Controller
     public function landingPage(){
         return view('landingpage');
     }
+    public function exibirConta()
+    {
+        // Mock da variável guia
+        $guia = (object) [
+            'id' => 1,
+            'nome' => 'João Silva',
+            'email' => 'joao.silva@example.com',
+            'telefone' => '(71) 91234-5678',
+            'data_nascimento' => '1985-08-15',
+            'cpf' => '123.456.789-00',
+            'cep' => '40000-000',
+            'endereco' => 'Rua das Trilhas, 123, Salvador - BA',
+            'link_instagram' => 'https://instagram.com/joaosilva',
+            'link_facebook' => 'https://facebook.com/joaosilva',
+            'foto' => null, // Ou 'caminho/para/foto.jpg' para simular uma foto existente
+            'doc_frente' => null, // Mock para arquivo de documento frente
+            'doc_verso' => null, // Mock para arquivo de documento verso
+        ];
+
+        return view('conta.perfilGuia', compact('guia'));
+    }
+
 
     /**
      * Show the form for creating a new resource.

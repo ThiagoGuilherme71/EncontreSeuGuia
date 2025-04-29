@@ -148,7 +148,7 @@
     });
 
     function redirectCreateAccount(idChoice){
-        // 0 = Guia / 1 = Trilheiro
+        // 0 = guia / 1 = Trilheiro
         if (idChoice === 0){
             window.location.href = "/signup-guia";
         }else{

@@ -21,7 +21,7 @@ class ClienteController extends Controller
             'foto' => null, // ou 'perfil.jpg' se quiser simular uma foto existente
         ];
 
-        return view('Conta.perfilCliente', compact('cliente'));
+        return view('auth.perfilCliente', compact('cliente'));
     }
 
 

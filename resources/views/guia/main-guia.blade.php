@@ -1,6 +1,6 @@
 @extends('layouts.app-guia')
 
-@section('title', 'Dashboard do Guia')
+@section('title', 'Dashboard do guia')
 
 @section('content')
     <div class="min-h-screen w-full bg-[#A27738] text-white">
