@@ -1,6 +1,6 @@
 @extends('layouts.app-guia')
 
-@section('title', 'Dashboard do Guia')
+@section('title', 'Dashboard do guia')
 
 @section('content')
     <div class="min-h-screen w-full bg-[#A27738] text-white">
@@ -12,7 +12,7 @@
                 <form action="{{ route('trilhas.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf <!-- Proteção contra CSRF -->
 
-                    <!-- Nome da Trilha -->
+                    <!-- Nome da trilha -->
                     <div class="mb-6">
                         <label for="nome" class="block text-lg font-semibold text-gray-700">Nome da Trilha</label>
                         <input type="text" id="nome" name="nome" class="w-full mt-2 p-3 rounded-lg border border-gray-300 text-gray-800" placeholder="Ex: Trilha da Pedra Encantada" required>

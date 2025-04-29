@@ -35,7 +35,10 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
+    public function isGuia()
+    {
+        return \DB::table('guias')->where('user_id', $this->id)->exists();
+    }
     /**
      * Get the attributes that should be cast.
      *

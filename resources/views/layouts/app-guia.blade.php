@@ -87,27 +87,27 @@
 </body>
 
 <!-- Rodapé -->
-<footer class="bg-gray-800 text-white py-6 galery-footer">
+<footer class="bg-gray-800 text-white py-6  ">
     <div class="container mx-auto flex flex-col md:flex-row gap-8 md:gap-0">
 
         <!-- Logo (Esquerda) -->
         <div class="w-48 flex justify-center md:justify-start ">
-            <img src="{{ asset('images/logo.png-Photoroom.png') }}" alt="Logo Encontre seu Guia" class="galery-footer-logo-img" style="width: 9rem">
+            <img src="{{ asset('images/logo.png-Photoroom.png') }}" alt="Logo Encontre seu Guia" class=" -logo-img" style="width: 9rem">
         </div>
 
         <!-- Texto Central -->
-        <div class=" text-center galery-footer-text">
-            <p class="mb-2 galery-footer-text-mission">
+        <div class=" text-center  -text">
+            <p class="mb-2  -text-mission">
                 Encontre seu Guia – Conectando você à natureza com segurança e experiência. Encontre guias qualificados,
                 explore trilhas incríveis e viva aventuras inesquecíveis.
             </p>
-            <p class="text-green-400 galery-footer-slogan">🌿 Descubra. Conecte-se. Explore. 🌿</p>
+            <p class="text-green-400  -slogan">🌿 Descubra. Conecte-se. Explore. 🌿</p>
         </div>
 
         <!-- Direitos e Contato (Direita) -->
-        <div class=" text-center md:text-right galery-footer-contact items-right">
-            <p class="galery-footer-rights">© 2025 Encontre seu Guia. Todos os direitos reservados.</p>
-            <div class="mt-2 galery-footer-info">
+        <div class=" text-center md:text-right  -contact items-right">
+            <p class=" -rights">© 2025 Encontre seu Guia. Todos os direitos reservados.</p>
+            <div class="mt-2  -info">
                 <p>📍 contato@encontreseuguia.com</p>
                 <p>📞 (XX) XXXXX-XXXX</p>
             </div>

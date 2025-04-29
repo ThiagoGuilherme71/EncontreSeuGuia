@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Trilha;
 use Illuminate\Http\Request;
 
 class TrilhaController extends Controller
 {
     public function trilhaSelecionada(){
-        return view('Trilha.trilhaPesquisa');
+        return view('trilha.trilhaPesquisa');
     }
 
     public function buscar(Request $request)
@@ -20,17 +21,17 @@ class TrilhaController extends Controller
         }
 
         // fallback ou mensagem de erro
-        return redirect()->back()->with('error', 'Trilha não encontrada');
+        return redirect()->back()->with('error', 'trilha não encontrada');
     }
 
     public function exibir($nome)
     {
-        // Simulação (poderia buscar no banco com: Trilha::where('slug', $nome)->first())
+        // Simulação (poderia buscar no banco com: trilha::where('slug', $nome)->first())
         if ($nome) {
             $trilha = (object)[
                 'id' => 1,
-                'nome' => 'Trilha da Pedra Encantada',
-                'descricao' => 'A Trilha da Pedra Encantada é uma rota de nível intermediário...',
+                'nome' => 'trilha da Pedra Encantada',
+                'descricao' => 'A trilha da Pedra Encantada é uma rota de nível intermediário...',
                 'nivel' => 'Intermediário',
             ];
 
@@ -40,9 +41,23 @@ class TrilhaController extends Controller
                 (object)[ 'id' => 3, 'nome' => 'Lucas Andrade', 'idade' => 40, 'experiencia' => 10, 'idiomas' => 'Português', 'avaliacao' => 3 ],
             ];
 
-            return view('Trilha.trilhaPesquisa', compact('trilha', 'guias'));
+            return view('trilha.trilhaPesquisa', compact('trilha', 'guias'));
         }
 
         return abort(404);
+    }
+    public function create(){
+    return view('trilha.formTrilha');
+    }
+    public function store(Request $request){
+        $trilha = Trilha::create([
+            'nome' => $request->nome,
+            'descricao' => $request->descricao,
+            'id_dificuldade' => $request->id_dificuldade, // ID da dificuldade relacionada
+            'cidade' => $request->cidade,
+            'foto' =>$request->foto
+        ]);
+        return redirect()->route('guia-dash');
+
     }
 }

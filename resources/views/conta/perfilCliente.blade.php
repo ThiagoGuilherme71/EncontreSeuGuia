@@ -18,7 +18,7 @@
 
                     <label for="foto" class="block text-sm font-medium text-gray-700">Alterar Foto</label>
                     <input type="file" name="foto" id="foto" accept="image/*"
-                           class="mt-1 text-sm text-gray-600"
+                           class="mt-1 text-sm text-gray-600 file:bg-[#348360]  file:text-white hover:file:bg-green-700"
                            onchange="previewFoto(event)">
                 </div>
 

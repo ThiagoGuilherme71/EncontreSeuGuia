@@ -12,7 +12,7 @@ class SignupController extends Controller
 {
     public function showSignupForm()
     {
-        return view('Signup.signup');
+        return view('auth.signup');
     }
 
     public function signup(Request $request)
@@ -45,7 +45,7 @@ class SignupController extends Controller
 
     public function showGuiaSignupForm()
     {
-        return view('Signup.signup-guia');
+        return view('auth.signup-guia');
     }
 
     public function signupGuia(Request $request)
