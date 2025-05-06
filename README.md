@@ -6,3 +6,5 @@ php artisan migrate --path=database/migrations/2025_04_14_171240_create_trilhas_
 php artisan migrate --path=database/migrations/2025_04_14_171240_create_agendamentos_table.php
 php artisan migrate --path=database/migrations/2025_04_14_171240_create_avaliacoes_table.php
 php artisan migrate --path=database/migrations/2025_04_14_171240_create_guia_sessions_table.php
+comandos pra executar o seed:
+php artisan db:seed
