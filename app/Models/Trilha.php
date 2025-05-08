@@ -40,4 +40,5 @@ class Trilha extends Model
     {
         return $this->belongsTo(Dificuldade::class, 'id_dificuldade');
     }
+
 }

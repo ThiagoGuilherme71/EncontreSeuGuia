@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Guia;
 use App\Models\Trilha;
 use Illuminate\Http\Request;
 
@@ -26,15 +27,16 @@ class TrilhaController extends Controller
 
     public function exibir($nome)
     {
-        // Simulação (poderia buscar no banco com: trilha::where('slug', $nome)->first())
-        if ($nome) {
-            $trilha = (object)[
-                'id' => 1,
-                'nome' => 'trilha da Pedra Encantada',
-                'descricao' => 'A trilha da Pedra Encantada é uma rota de nível intermediário...',
-                'nivel' => 'Intermediário',
-            ];
 
+        if ($nome) {
+            $trilha = Trilha::all()->where('nome', $nome);
+//            $trilha = (object)[
+//                'id' => 1,
+//                'nome' => 'trilha da Pedra Encantada',
+//                'descricao' => 'A trilha da Pedra Encantada é uma rota de nível intermediário...',
+//                'nivel' => 'Intermediário',
+//            ];
+            $guias = Guia::select('nome', )->get();
             $guias = [
                 (object)[ 'id' => 1, 'nome' => 'Carlos Silva', 'idade' => 32, 'experiencia' => 5, 'idiomas' => 'Português, Inglês', 'avaliacao' => 4 ],
                 (object)[ 'id' => 2, 'nome' => 'Ana Oliveira', 'idade' => 29, 'experiencia' => 3, 'idiomas' => 'Português, Espanhol', 'avaliacao' => 5 ],

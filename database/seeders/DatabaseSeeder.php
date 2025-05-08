@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Trilha;
+use App\Models\Dificuldade;
+use App\Models\Guia;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +14,41 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Criando valores fixos na tabela 'dificuldades'
+        $dificuldades = ['Fácil', 'Intermediária', 'Difícil'];
+        foreach ($dificuldades as $descricao) {
+            Dificuldade::create(['descricao' => $descricao]);
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Pegando IDs das dificuldades criadas
+        $dificuldadeIds = Dificuldade::pluck('id')->toArray();
+
+        // Criando 6 trilhas associadas a dificuldades
+        for ($i = 1; $i <= 6; $i++) {
+            Trilha::create([
+                'nome' => "Trilha $i",
+                'descricao' => "Descrição da Trilha $i",
+                'id_dificuldade' => $dificuldadeIds[array_rand($dificuldadeIds)], // Define uma dificuldade aleatória
+                'cidade' => "Cidade $i",
+            ]);
+        }
+
+        // Criando 6 guias
+        for ($i = 1; $i <= 6; $i++) {
+            Guia::create([
+                'nome' => "Guia $i",
+                'email' => "guia$i@example.com",
+                'telefone' => "(71) 90000-000$i",
+                'cep' => "40000-00$i",
+                'endereco' => "Rua dos Guias, $i",
+                'link_instagram' => "https://instagram.com/guia$i",
+                'link_facebook' => "https://facebook.com/guia$i",
+                'doc_frente' => "doc_frente$i.jpg",
+                'doc_verso' => "doc_verso$i.jpg",
+                'password' => bcrypt("senha$i"),
+                'data_nascimento' => "198$i-01-15",
+                'cpf' => "123.456.78$i-00",
+            ]);
+        }
     }
 }
