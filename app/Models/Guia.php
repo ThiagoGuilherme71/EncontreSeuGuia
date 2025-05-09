@@ -23,6 +23,7 @@ class Guia extends Authenticatable
         'telefone',
         'cep',
         'endereco',
+        'anos_experiencia',
         'link_instagram',
         'link_facebook',
         'doc_frente',

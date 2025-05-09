@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Idioma;
 use Illuminate\Database\Seeder;
 use App\Models\Trilha;
 use App\Models\Dificuldade;
@@ -49,6 +50,17 @@ class DatabaseSeeder extends Seeder
                 'data_nascimento' => "198$i-01-15",
                 'cpf' => "123.456.78$i-00",
             ]);
+        }
+        // Lista dos principais idiomas do mundo
+        $idiomas = [
+            'Inglês', 'Mandarim', 'Hindi', 'Espanhol', 'Francês', 'Árabe',
+            'Bengali', 'Russo', 'Português', 'Urdu', 'Indonésio', 'Alemão',
+            'Japonês', 'Turco', 'Tâmil', 'Coreano', 'Vietnamita', 'Persa'
+        ];
+
+        // Inserindo os idiomas na tabela
+        foreach ($idiomas as $nome) {
+            Idioma::create(['nome_idioma' => $nome]);
         }
     }
 }

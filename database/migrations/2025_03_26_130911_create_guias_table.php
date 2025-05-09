@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('telefone');
             $table->string('cep');
             $table->string('endereco');
+            $table->integer('anos_experiencia');
             $table->string('link_instagram')->nullable();
             $table->string('link_facebook')->nullable();
             $table->string('doc_frente');
