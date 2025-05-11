@@ -56,4 +56,9 @@ class Guia extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function idiomas()
+    {
+        return $this->belongsToMany(Idioma::class, 'idiomas_guias');
+    }
+
 }

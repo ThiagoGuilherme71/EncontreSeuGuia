@@ -11,4 +11,10 @@ class Idioma extends Model
 
     protected $table = 'idiomas'; // Define a tabela correta
     protected $fillable = ['nome_idioma']; // Permite atribuição em massa
+
+    public function guias()
+    {
+        return $this->belongsToMany(Guia::class, 'idiomas_guias');
+    }
+
 }

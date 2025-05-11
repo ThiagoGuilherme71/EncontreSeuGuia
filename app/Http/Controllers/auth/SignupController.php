@@ -5,6 +5,7 @@ namespace App\Http\Controllers\auth;
 use App\Http\Controllers\Controller;
 use App\Models\Guia;
 use App\Models\Idioma;
+use App\Models\IdiomaGuia;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -68,6 +69,7 @@ class SignupController extends Controller
 //        ]);
 
 
+
         $guia = Guia::create([
             'nome' => $request->nome,
             'email' => $request->email,
@@ -82,6 +84,9 @@ class SignupController extends Controller
             'doc_verso' => $request->doc_verso,
             'password' => Hash::make($request->password),
         ]);
+        if ($request->idiomas) {
+            $guia->idiomas()->sync($request->idiomas);
+        }
 
         auth()->login($guia);
         // tem que mudar essa view e criar um dash do guia

@@ -5,27 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Guia - Encontre seu Guia</title>
     <link href="{{ asset('css/output.css') }}" rel="stylesheet"> <!-- Tailwind CSS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+
+    <!-- FullCalendar principal -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+    <!-- Locale PT-BR -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/pt-br.global.min.js"></script>
+
+
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="m-0 p-0 flex flex-col min-h-screen bg-gray-100 font-sans">
-<div class="flex w-full h-full">
+<body class="m-0  flex flex-col min-h-full bg-gray-100 font-sans" >
+<div class="flex w-full ">
     <!-- LADO ESQUERDO -->
-    <div class="w-2/3 h-screen bg-[#E3CDA8] flex flex-col justify-center items-center p-8">
+    <div class="w-2/3 h-full bg-[#E3CDA8] flex flex-col justify-center items-center p-8">
         <img src="{{ asset('images/logo.png-Photoroom.png') }}" alt="Logo Encontre Seu Guia" class="w-48 mt-2">
         <h1 class="text-3xl font-bold text-[#348360] text-center" style="margin-top: -20px">Cadastro de Guias</h1>
         <p class="text-gray-600 mb-2 text-center">Preencha os dados abaixo para criar sua conta.</p>
-        <form action="#" method="POST" enctype="multipart/form-data" class="w-full max-w-lg">
+        <form action="{{ route('signup.guia.submit')}}" method="POST" enctype="multipart/form-data" class="w-full max-w-lg">
             @csrf
 
             <!-- 1ª linha: E-mail -->
             <div class="mb-6">
                 <label for="nome" class="block text-sm font-medium text-gray-700">Nome completo</label>
                 <input type="text" id="nome" name="nome" required
-                       class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                       class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 px-3">
             </div>
             <div class="mb-6">
                 <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
                 <input type="email" id="email" name="email" required
-                       class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                       class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 px-3">
             </div>
 
             <!-- 2ª linha: Telefone e Data de Nascimento -->
@@ -33,57 +51,61 @@
                 <div>
                     <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
                     <input type="text" id="telefone" name="telefone" required
-                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 px-3">
                 </div>
 
                 <div>
                     <label for="data_nascimento" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
                     <input type="date" id="data_nascimento" name="data_nascimento" required
-                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 px-3">
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                     <label for="experiencia" class="block text-sm font-medium text-gray-700">Anos de Experiência</label>
                     <input type="number" id="experiencia" name="experiencia" required
-                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 px-3">
                 </div>
 
+                <div x-data="{ open: false, selectedIdiomas: [] }" class="relative">
+                    <label for="idiomas" class="block text-sm font-medium text-gray-700">Idiomas</label>
+                    <button @click="open = !open" class="flex justify-between items-center w-full p-2 border rounded-md text-left bg-white">
+                        <span class="text-gray-700" x-text="selectedIdiomas.length > 0 ? selectedIdiomas.join(', ') : 'Selecione os idiomas'"></span>
+                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
 
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <label for="experiencia" class="block text-sm font-medium text-gray-700">Selecione os Idiomas</label>
-                    <ul class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        @foreach ($idiomas as $idioma)
-                            <li class="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                                <div class="flex items-center ps-3 text-black">
-                                    <input id="idioma-{{ $idioma->id }}" type="checkbox" name="idiomas[]" value="{{ $idioma->id }}"
-                                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                    <label for="idioma-{{ $idioma->id }}" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                        {{ $idioma->nome_idioma }}
-                                    </label>
-                                </div>
-                            </li>
-                        @endforeach
-                    </ul>
-
+                    <div x-show="open" class="absolute z-10 w-full bg-white border rounded-md shadow-lg mt-1">
+                        <ul class="max-h-32 overflow-y-auto">
+                            @foreach ($idiomas as $idioma)
+                                <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-500" @click="selectedIdiomas.includes('{{ $idioma->nome_idioma }}') ? selectedIdiomas.splice(selectedIdiomas.indexOf('{{ $idioma->nome_idioma }}'), 1) : selectedIdiomas.push('{{ $idioma->nome_idioma }}')">
+                                    <input type="checkbox" name="idiomas[]" value="{{ $idioma->id }}"
+                                           :checked="selectedIdiomas.includes('{{ $idioma->nome_idioma }}')" class="mr-2">
+                                    {{ $idioma->nome_idioma }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             </div>
+
+
+
 
             <!-- 3ª linha: CPF e CEP -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                     <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
                     <input type="text" id="cpf" name="cpf" required
-                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 px-3">
                 </div>
 
                 <div>
                     <label for="cep" class="block text-sm font-medium text-gray-700">CEP</label>
                     <input type="text" id="cep" name="cep" required
-                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 px-3">
                 </div>
             </div>
 
@@ -91,7 +113,7 @@
             <div class="mb-6">
                 <label for="endereco" class="block text-sm font-medium text-gray-700">Endereço Completo</label>
                 <input type="text" id="endereco" name="endereco" required
-                       class="mt-1 block h-10 text-gray-600 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                       class="mt-1 block h-10 text-gray-600 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 px-3">
             </div>
 
             <!-- 5ª linha: Link Instagram e Link Facebook -->
@@ -99,13 +121,13 @@
                 <div>
                     <label for="link_instagram" class="block text-sm font-medium text-gray-700">Link do Instagram</label>
                     <input type="url" id="link_instagram" name="link_instagram"
-                           class="mt-1 block h-10 text-gray-600 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 block h-10 text-gray-600 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 px-3">
                 </div>
 
                 <div>
                     <label for="link_facebook" class="block text-sm font-medium text-gray-700">Link do Facebook</label>
                     <input type="url" id="link_facebook" name="link_facebook"
-                           class="mt-1 block h-10 text-gray-600 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 block h-10 text-gray-600 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 px-3">
                 </div>
             </div>
 
@@ -114,13 +136,13 @@
                 <div>
                     <label for="doc_frente" class="block text-sm font-medium text-gray-700">Documento Frente</label>
                     <input type="file" id="doc_frente" name="doc_frente" required
-                           class="mt-1 block w-full text-gray-600 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-[#348360] file:text-white hover:file:bg-green-700 transition">
+                           class="mt-1 block w-full text-gray-600 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-[#348360] file:text-white hover:file:bg-green-700 transition px-3">
                 </div>
 
                 <div>
                     <label for="doc_verso" class="block text-sm font-medium text-gray-700">Documento Verso</label>
                     <input type="file" id="doc_verso" name="doc_verso" required
-                           class="mt-1 block w-full text-gray-600 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-[#348360] file:text-white hover:file:bg-green-700 transition">
+                           class="mt-1 block w-full text-gray-600 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-[#348360] file:text-white hover:file:bg-green-700 transition px-3">
                 </div>
             </div>
 
@@ -129,13 +151,13 @@
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700">Senha</label>
                     <input type="password" id="password" name="password" required
-                           class="mt-1 block h-10 text-gray-600 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 block h-10 text-gray-600 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 px-3">
                 </div>
 
                 <div>
                     <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Repetir Senha</label>
                     <input type="password" id="password_confirmation" name="password_confirmation" required
-                           class="mt-1 block h-10 w-full text-gray-600 rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 block h-10 w-full text-gray-600 rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 px-3">
                 </div>
             </div>
 
@@ -154,7 +176,7 @@
         </form>
     </div>
     <!-- LADO DIREITO -->
-    <div class="w-1/3 h-screen relative bg-cover bg-center" style="background-image: url('{{ asset('images/cachoeira.jpg') }}')">
+    <div class="w-1/3  relative bg-cover bg-center" style="background-image: url('{{ asset('images/cachoeira.jpg') }}')">
         <div class="absolute inset-0 bg-black bg-opacity-30"></div>
         <div class="relative z-10 h-full flex flex-col justify-center items-center text-center text-white p-8">
             <h2 class="text-4xl md:text-5xl font-bold">Conecte-se com a Natureza</h2>

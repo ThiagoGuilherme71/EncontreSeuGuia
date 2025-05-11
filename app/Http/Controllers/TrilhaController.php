@@ -25,6 +25,13 @@ class TrilhaController extends Controller
         return redirect()->back()->with('error', 'trilha não encontrada');
     }
 
+    public function getAllTrilhas()
+    {
+        $trilhas = Trilha::all();
+        dd($trilhas);
+        return $trilhas;
+    }
+
     public function exibir($nome)
     {
 

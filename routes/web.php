@@ -30,6 +30,7 @@ Route::get('/trilhaSelecionada', [TrilhaController::class, 'trilhaSelecionada'])
 Route::get('/buscar-trilha', [TrilhaController::class, 'buscar'])->name('trilhas.buscar');
 Route::get('/trilhas/{nome}', [TrilhaController::class, 'exibir'])->name('trilhas.exibir');
 Route::get('/trilhas/', [TrilhaController::class, 'create'])->name('trilhas.create');
+Route::get('/get-all-trilhas/', [TrilhaController::class, 'getAllTrilhas'])->name('trilhas.create');
 Route::post('/trilhas/', [TrilhaController::class, 'store'])->name('trilhas.store');
 
 //conta
