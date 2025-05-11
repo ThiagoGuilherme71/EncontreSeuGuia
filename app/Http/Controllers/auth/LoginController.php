@@ -14,6 +14,7 @@ class LoginController extends Controller
         return view('main');
     }
 
+
     public function login(Request $request)
     {
         $request->validate([

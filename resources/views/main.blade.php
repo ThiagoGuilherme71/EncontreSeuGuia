@@ -46,30 +46,27 @@
                         class="w-full bg-[#348360] text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition">
                     Entrar
                 </button>
-
-                <div class="text-right mt-4">
-                    <button type="button" id="createAccount" class="bg-[#A27738] px-6 py-2 text-white font-bold rounded hover:bg-[#348360] transition">
-                        Criar Conta
+            </form>
+            <div class="text-right mt-4">
+                <button type="button" id="createAccount" class="bg-[#A27738] px-6 py-2 text-white font-bold rounded hover:bg-[#348360] transition">
+                    Criar Conta
+                </button>
+            </div>
+            {{--                pop-up hidde--}}
+            <div id="popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <div class="bg-white rounded-lg p-6 w-[350px] shadow-lg text-center">
+                    <h2 class="text-xl font-bold mb-4 text-gray-600">Escolha uma opção</h2>
+                    <button id="signupGuia" onclick="redirectCreateAccount(0)" class="bg-[#348360] text-white px-4 py-2 rounded mb-2 w-full">
+                        Criar Conta para Guia
+                    </button>
+                    <button id="signupTrilheiro"  onclick="redirectCreateAccount(1)" class="bg-[#348360] text-white px-4 py-2 rounded  w-full">
+                        Criar Conta para Trilheiro
+                    </button>
+                    <button id="closePopup" class=" mt-4 px-4 py-2 rounded  text-red-500">
+                        Fechar
                     </button>
                 </div>
-{{--                pop-up hidde--}}
-                <div id="popup" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div class="bg-white rounded-lg p-6 w-[350px] shadow-lg text-center">
-                        <h2 class="text-xl font-bold mb-4 text-gray-600">Escolha uma opção</h2>
-                        <button id="signupGuia" onclick="redirectCreateAccount(0)" class="bg-[#348360] text-white px-4 py-2 rounded mb-2 w-full">
-                            Criar Conta para Guia
-                        </button>
-                        <button id="signupTrilheiro"  onclick="redirectCreateAccount(1)" class="bg-[#348360] text-white px-4 py-2 rounded  w-full">
-                            Criar Conta para Trilheiro
-                        </button>
-                        <button id="closePopup" class=" mt-4 px-4 py-2 rounded  text-red-500">
-                            Fechar
-                        </button>
-                    </div>
-                </div>
-
-
-            </form>
+            </div>
         </div>
         <!-- LADO DIREITO -->
         <div id="rightSide" class="w-2/3 relative bg-cover bg-center transition-all duration-1000 ease-in-out transform"
@@ -122,7 +119,7 @@
                         rightSide.classList.add('opacity-100', 'translate-y-0');
                     })
                     .catch(error => console.error('Erro ao carregar o componente:', error));
-            }, 500); // Tempo da transição de saída
+            }, 100); // Tempo da transição de saída
         });
     });
 
