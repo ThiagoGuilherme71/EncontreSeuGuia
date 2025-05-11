@@ -42,6 +42,7 @@ class DatabaseSeeder extends Seeder
                 'telefone' => "(71) 90000-000$i",
                 'cep' => "40000-00$i",
                 'endereco' => "Rua dos Guias, $i",
+                'anos_experiencia' => $i,
                 'link_instagram' => "https://instagram.com/guia$i",
                 'link_facebook' => "https://facebook.com/guia$i",
                 'doc_frente' => "doc_frente$i.jpg",

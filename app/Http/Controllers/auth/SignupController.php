@@ -4,6 +4,7 @@ namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Guia;
+use App\Models\Idioma;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -45,7 +46,8 @@ class SignupController extends Controller
 
     public function showGuiaSignupForm()
     {
-        return view('auth.signup-guia');
+        $idiomas = Idioma::all();
+        return view('auth.signup-guia', compact('idiomas'));
     }
 
     public function signupGuia(Request $request)
