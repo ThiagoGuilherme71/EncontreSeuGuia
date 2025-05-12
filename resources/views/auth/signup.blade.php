@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Guia - Encontre seu Guia</title>
     <link href="{{ asset('css/output.css') }}" rel="stylesheet"> <!-- Tailwind CSS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+
+    <!-- FullCalendar principal -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+    <!-- Locale PT-BR -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/pt-br.global.min.js"></script>
+
+
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="m-0 p-0 flex flex-col min-h-screen bg-gray-100 font-sans">
     <div class="flex w-full">
@@ -29,21 +47,21 @@
                 <div class="mb-6">
                     <label for="nome" class="block text-sm font-medium text-gray-700">Nome Completo</label>
                     <input type="text" id="nome" name="nome" required
-                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600  px-3">
                 </div>
 
                 <!-- 2ª linha: E-mail -->
                 <div class="mb-6">
                     <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
                     <input type="email" id="email" name="email" required
-                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600  px-3">
                 </div>
 
                 <!-- 3ª linha: CPF -->
                 <div class="mb-6">
                     <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
                     <input type="text" id="cpf" name="cpf" required
-                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600  px-3">
                 </div>
 
                 <!-- 4ª linha: Telefone e Data de Nascimento -->
@@ -51,13 +69,13 @@
                     <div>
                         <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
                         <input type="text" id="telefone" name="telefone" required
-                               class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                               class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 px-3 ">
                     </div>
 
                     <div>
                         <label for="data_nascimento" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
                         <input type="date" id="data_nascimento" name="data_nascimento" required
-                               class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                               class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600  px-3">
                     </div>
                 </div>
 
@@ -65,14 +83,14 @@
                 <div class="mb-6">
                     <label for="password" class="block text-sm font-medium text-gray-700">Senha</label>
                     <input type="password" minlength="6" id="password" name="password" required
-                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600  px-3">
                 </div>
 
                 <!-- 6ª linha: Repetir Senha -->
                 <div class="mb-6">
                     <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Repetir Senha</label>
                     <input type="password" minlength="6" id="password_confirmation" name="password_confirmation" required
-                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600">
+                           class="mt-1 text-gray-600 block h-10 w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600  px-3">
                 </div>
 
                 <!-- Botão de Envio -->

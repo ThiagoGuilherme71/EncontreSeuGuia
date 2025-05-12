@@ -40,5 +40,9 @@ class Trilha extends Model
     {
         return $this->belongsTo(Dificuldade::class, 'id_dificuldade');
     }
+    public function guias()
+    {
+        return $this->belongsToMany(Guia::class, 'trilhas_guias', 'trilha_id', 'guia_id');
+    }
 
 }

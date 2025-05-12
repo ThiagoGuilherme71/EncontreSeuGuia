@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Guia;
+use App\Models\Trilha;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
@@ -22,6 +24,13 @@ class ClienteController extends Controller
         ];
 
         return view('auth.perfilCliente', compact('cliente'));
+    }
+
+    public function landingPage(){
+        $trilhas = Trilha::all();
+        $guias = Guia::all();
+
+        return view('landingpage' , compact('guias', 'trilhas'));
     }
 
 
