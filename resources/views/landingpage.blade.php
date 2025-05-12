@@ -36,38 +36,53 @@
             x-data="carouselTrilhas()"
             class="relative h-screen bg-[#A27738] bg-opacity-90 overflow-hidden"
         >
-            <div class="relative z-10 h-full flex flex-col justify-center items-center text-center text-white p-8">
-                <h2 class="text-3xl md:text-4xl justify-center items-center text-center font-bold mb-8">
-                    Principais Trilhas
-                </h2>
+            <div class="relative z-8 w-full h-full flex flex-col justify-center items-center text-center text-white p-8">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8">Principais Trilhas</h2>
 
                 <!-- Carrossel de Trilhas -->
                 <div class="relative w-full max-w-6xl overflow-hidden">
-
                     <!-- Slides Wrapper -->
                     <div
                         class="flex transition-transform duration-500 ease-in-out"
                         :style="`transform: translateX(-${current * (100 / itemsPerPage)}%);`"
                     >
-                        <!-- Exemplo com 6 trilhas -->
-                        @for ($i = 1; $i <= 6; $i++)
-                            <div class="flex-none w-1/2 px-4">
+                        @foreach ($trilhas as $trilha)
+                            <div class="flex-none w-full md:w-1/2 lg:w-1/2 px-4">
                                 <!-- Card Trilhas -->
-                                <div class="card-trilhas">
-                                    <img src="{{ asset('images/cachoeira.jpg') }}" alt="Trilha {{ $i }}" class="card-image-trilhas">
+                                <div class="relative flex flex-col h-full rounded-xl bg-white shadow-md overflow-hidden">
+                                    <!-- Nome da trilha -->
+                                    <h5 class="mt-4 text-xl font-semibold text-black">
+                                        Trilha: {{ $trilha->nome }}
+                                    </h5>
 
-                                    <div class="category-trilhas">Trilha {{ $i }}</div>
+                                    <!-- Imagem da trilha -->
+                                    <div class="relative mx-4 mt-6 h-56 overflow-hidden min-h-48 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg">
+                                        <img src="{{ asset($trilha->foto) }}" alt="Trilha {{ $trilha->nome }}" class="h-full w-full object-cover">
+                                    </div>
 
-                                    <div class="heading-trilhas">
-                                        Descrição da trilha {{ $i }}
-
-                                        <div class="author-trilhas">
-                                            Prepare-se para uma aventura incrível!
+                                    <!-- Conteúdo -->
+                                    <div class="p-6 h-full flex flex-col justify-between">
+                                        <div>
+                                            <p class="text-base font-light leading-relaxed text-gray-700">
+                                                {{ $trilha->descricao }}
+                                            </p>
+                                            <p class="text-sm text-gray-600">
+                                                <strong>Cidade:</strong> {{ $trilha->cidade }}
+                                            </p>
+                                            <p class="text-sm text-gray-600">
+                                                <strong>Data de criação:</strong> {{ \Carbon\Carbon::parse($trilha->created_at)->format('d/m/Y') }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <!-- Botão -->
+                                            <button class="rounded-lg bg-blue-500 py-3 px-6 text-white font-bold uppercase shadow-md transition-all hover:shadow-lg">
+                                                Saiba Mais
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        @endfor
+                        @endforeach
                     </div>
 
                     <!-- Botão Anterior -->
@@ -88,6 +103,9 @@
                 </div>
             </div>
         </section>
+
+
+
 
 
 

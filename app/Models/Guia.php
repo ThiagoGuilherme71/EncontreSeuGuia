@@ -60,5 +60,9 @@ class Guia extends Authenticatable
     {
         return $this->belongsToMany(Idioma::class, 'idiomas_guias');
     }
+    public function trilhas()
+    {
+        return $this->belongsToMany(Trilha::class, 'trilhas_guias', 'guia_id', 'trilha_id');
+    }
 
 }

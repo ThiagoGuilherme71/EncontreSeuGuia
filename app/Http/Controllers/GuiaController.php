@@ -17,9 +17,7 @@ class GuiaController extends Controller
     {
         return view('guia-list');
     }
-    public function landingPage(){
-        return view('landingpage');
-    }
+
     public function exibirConta()
     {
         // Mock da variável guia

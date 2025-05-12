@@ -28,27 +28,40 @@ class TrilhaController extends Controller
     public function getAllTrilhas()
     {
         $trilhas = Trilha::all();
-        dd($trilhas);
         return $trilhas;
+//         tipo de retorno:
+//        "id" => 2
+//        "nome" => "Thiago Guilherme"
+//        "descricao" => "rth"
+//        "id_dificuldade" => 1
+//        "cidade" => "fh"
+//        "foto" => "C:\Users\thiag\AppData\Local\Temp\php787A.tmp"
+//        "created_at" => "2025-04-26 00:00:14"
+//        "updated_at" => "2025-04-26 00:00:14"
+    }
+    public function getTrilha($id)
+    {
+        $trilha = Trilha::where('id', $id)->first();
+        return $trilha;
+//         tipo de retorno:
+//        "id" => 2
+//        "nome" => "Thiago Guilherme"
+//        "descricao" => "rth"
+//        "id_dificuldade" => 1
+//        "cidade" => "fh"
+//        "foto" => "C:\Users\thiag\AppData\Local\Temp\php787A.tmp"
+//        "created_at" => "2025-04-26 00:00:14"
+//        "updated_at" => "2025-04-26 00:00:14"
     }
 
     public function exibir($nome)
     {
 
         if ($nome) {
-            $trilha = Trilha::all()->where('nome', $nome);
-//            $trilha = (object)[
-//                'id' => 1,
-//                'nome' => 'trilha da Pedra Encantada',
-//                'descricao' => 'A trilha da Pedra Encantada é uma rota de nível intermediário...',
-//                'nivel' => 'Intermediário',
-//            ];
-            $guias = Guia::select('nome', 'anos_experiencia')->get();
-            $guias = [
-                (object)[ 'id' => 1, 'nome' => 'Carlos Silva', 'idade' => 32, 'experiencia' => 5, 'idiomas' => 'Português, Inglês', 'avaliacao' => 4 ],
-                (object)[ 'id' => 2, 'nome' => 'Ana Oliveira', 'idade' => 29, 'experiencia' => 3, 'idiomas' => 'Português, Espanhol', 'avaliacao' => 5 ],
-                (object)[ 'id' => 3, 'nome' => 'Lucas Andrade', 'idade' => 40, 'experiencia' => 10, 'idiomas' => 'Português', 'avaliacao' => 3 ],
-            ];
+            $trilha = Trilha::where('nome', $nome)->first();
+
+            $guias = $trilha->guias()->select('nome', 'anos_experiencia')->get();
+
 
             return view('trilha.trilhaPesquisa', compact('trilha', 'guias'));
         }
