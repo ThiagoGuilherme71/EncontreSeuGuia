@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Guia;
 use App\Models\Idioma;
 use App\Models\IdiomaGuia;
+use App\Models\Trilha;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -48,7 +49,8 @@ class SignupController extends Controller
     public function showGuiaSignupForm()
     {
         $idiomas = Idioma::all();
-        return view('auth.signup-guia', compact('idiomas'));
+        $trilhas = Trilha::all();
+        return view('auth.signup-guia', compact('idiomas', 'trilhas'));
     }
 
     public function signupGuia(Request $request)
@@ -69,7 +71,6 @@ class SignupController extends Controller
 //        ]);
 
 
-
         $guia = Guia::create([
             'nome' => $request->nome,
             'email' => $request->email,
@@ -77,6 +78,7 @@ class SignupController extends Controller
             'data_nascimento' => $request->data_nascimento,
             'cpf' => $request->cpf,
             'cep' => $request->cep,
+            'anos_experiencia' => $request->experiencia,
             'endereco' => $request->endereco,
             'link_instagram' => $request->link_instagram,
             'link_facebook' => $request->link_facebook,
@@ -86,6 +88,9 @@ class SignupController extends Controller
         ]);
         if ($request->idiomas) {
             $guia->idiomas()->sync($request->idiomas);
+        }
+        if ($request->trilhas) {
+            $guia->trilhas()->sync($request->trilhas);
         }
 
         auth()->login($guia);
