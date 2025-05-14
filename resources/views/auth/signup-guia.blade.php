@@ -91,6 +91,31 @@
                 </div>
             </div>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div x-data="{ open: false, selectedTrilhas: [] }" class="relative">
+                    <label for="trilhas" class="block text-sm font-medium text-gray-700">Trilhas</label>
+                    <button @click="open = !open" class="flex justify-between items-center w-full p-2 border rounded-md text-left bg-white">
+                        <span class="text-gray-700" x-text="selectedTrilhas.length > 0 ? selectedTrilhas.join(', ') : 'Selecione as Trilhas'"></span>
+                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+
+                    <div x-show="open" class="absolute z-10 w-full bg-white border rounded-md shadow-lg mt-1">
+                        <ul class="max-h-32 overflow-y-auto">
+                            @foreach ($trilhas as $trilha)
+                                <li class="p-2 hover:bg-gray-200 cursor-pointer text-gray-500" @click="selectedTrilhas.includes('{{ $trilha->nome }}') ? selectedTrilhas.splice(selectedTrilhas.indexOf('{{ $trilha->nome }}'), 1) : selectedTrilhas.push('{{ $trilha->nome }}')">
+                                    <input type="checkbox" name="trilhas[]" value="{{ $trilha->id }}"
+                                           :checked="selectedTrilhas.includes('{{ $trilha->nome }}')" class="mr-2">
+                                    {{ $trilha->nome }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
 
 
 
