@@ -5,8 +5,8 @@
 @section('content')
     <div class="min-h-screen w-full bg-[#A27738] text-white">
 
-        <div id="formTrilha" class=" bg-opacity-90  text-white " style="margin-top: 150px; ">
-            <div class="max-w-3xl mx-auto  bg-gray-100 rounded-xl shadow-lg p-8 " >
+        <div id="formTrilha" class="bg-opacity-90 text-white" style="margin-top: 150px;">
+            <div class="max-w-3xl mx-auto bg-gray-100 rounded-xl shadow-lg p-8">
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Criar Nova Trilha</h2>
 
                 <form action="{{ route('trilhas.store') }}" method="POST" enctype="multipart/form-data">
@@ -41,10 +41,15 @@
                         <input type="text" id="cidade" name="cidade" class="w-full mt-2 p-3 rounded-lg border border-gray-300 text-gray-800" placeholder="Ex: Salvador" required>
                     </div>
 
-                    <!-- Foto -->
+                    <!-- Foto + Preview -->
                     <div class="mb-6">
                         <label for="foto" class="block text-lg font-semibold text-gray-700">Foto da Trilha</label>
-                        <input type="file" id="foto" name="foto" class="w-full mt-2 p-3 rounded-lg border border-gray-300 text-gray-800" accept="image/*">
+                        <input type="file" id="foto" name="foto" class="w-full mt-2 p-3 rounded-lg border border-gray-300 text-gray-800" accept="image/*" onchange="previewImage(event)">
+
+                        <!-- Preview da Imagem -->
+                        <div class="mt-4">
+                            <img id="preview" class="w-full h-64 object-cover rounded-lg border border-gray-300" style="display: none;">
+                        </div>
                     </div>
 
                     <!-- Botão -->
@@ -58,4 +63,24 @@
         </div>
     </div>
 
+    <!-- JavaScript para Preview da Imagem -->
+    <script>
+        function previewImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('preview');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+    </script>
 @endsection

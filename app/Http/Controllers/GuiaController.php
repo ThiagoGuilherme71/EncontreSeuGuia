@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Guia;
 use Illuminate\Http\Request;
 
 class GuiaController extends Controller
@@ -16,6 +17,10 @@ class GuiaController extends Controller
     public function list()
     {
         return view('guia-list');
+    }
+    public function getAllGuias(){
+        $guias = Guia::all();
+        return $guias;
     }
 
     public function exibirConta()

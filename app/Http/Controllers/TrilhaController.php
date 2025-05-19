@@ -75,10 +75,16 @@ class TrilhaController extends Controller
         $trilha = Trilha::create([
             'nome' => $request->nome,
             'descricao' => $request->descricao,
-            'id_dificuldade' => $request->id_dificuldade, // ID da dificuldade relacionada
+            'id_dificuldade' => $request->id_dificuldade,
             'cidade' => $request->cidade,
-            'foto' =>$request->foto
         ]);
+
+        if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
+            $path = $request->file('foto')->store('trilhas', 'public');
+            $trilha->foto = 'storage/' . $path;
+            $trilha->save();
+        }
+
         return redirect()->route('guia-dash');
 
     }

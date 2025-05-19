@@ -47,7 +47,7 @@
                         :style="`transform: translateX(-${current * (100 / itemsPerPage)}%);`"
                     >
                         @foreach ($trilhas as $trilha)
-                            <div class="flex-none w-full md:w-1/2 lg:w-1/2 px-4">
+                            <div class="flex-none w-full md:w-1/3 lg:w-1/4 px-4">
                                 <!-- Card Trilhas -->
                                 <div class="relative flex flex-col h-full rounded-xl bg-white shadow-md overflow-hidden">
                                     <!-- Nome da trilha -->
@@ -194,20 +194,22 @@
                     <div class="flex transition-all duration-500 space-x-4" :style="`transform: translateX(-${active * (100 / 2)}%)`">
                         <!-- Dividindo por 2 porque queremos exibir 2 cards -->
 
-                        @for ($i = 1; $i <= 6; $i++)
+                        @foreach($guias as $guia)
                             <div class="flex-shrink-0 w-1/2 flex h-screen items-center justify-center text-white text-3xl font-bold rounded-lg">
                                 <!-- Card -->
                                 <div class="card">
                                     <div class="card-border-top"></div>
                                     <div class="img">
-                                        <img src="images/guiaAnimado.png" alt="Guia {{ $i }}">
+                                        <img src="images/guiaAnimado.png" alt="Guia{{ $guia->nome}}">
                                     </div>
-                                    <span>Guia {{ $i }}</span>
-                                    <p class="job">Especialidade {{ $i }}</p>
+                                    <span>{{$guia->nome}}</span>
+                                    <p class="job">telefone: {{ $guia->telefone }}</p>
+                                    <p class="job">Anos de experiência: {{ $guia->anos_experiencia }}</p>
+                                    <p class="job">Avaliação: 5</p>
                                     <button>Agendar</button>
                                 </div>
                             </div>
-                        @endfor
+                        @endforeach
 
                     </div>
 
