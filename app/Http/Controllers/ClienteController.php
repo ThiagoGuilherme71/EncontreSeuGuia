@@ -29,7 +29,6 @@ class ClienteController extends Controller
     public function landingPage(){
         $trilhas = Trilha::all();
         $guias = Guia::all();
-
         return view('landingpage' , compact('guias', 'trilhas'));
     }
 
