@@ -2,8 +2,9 @@ import { Head, Link } from '@inertiajs/react';
 import AppLayout from '@/Layouts/AppLayout';
 import Avatar from '@/Components/ui/Avatar';
 import Badge from '@/Components/ui/Badge';
+import Button from '@/Components/ui/Button';
 import { StarDisplay } from '@/Components/ui/StarRating';
-import { ChevronLeft, Award, MapPin, AtSign, Link2, Languages, Phone, Mail } from 'lucide-react';
+import { ChevronLeft, Award, MapPin, AtSign, Link2, Languages, Phone, Mail, Pencil } from 'lucide-react';
 
 function Linha({ icon: Icon, label, children }) {
     if (!children) return null;
@@ -35,8 +36,15 @@ export default function Conta({ perfil, idiomas = [], media_avaliacoes, total_av
 
                 {/* Header do perfil */}
                 <div className="bg-white rounded-2xl border-2 border-[#1C1917] shadow-[3px_3px_0px_#1C1917] p-5 mb-4">
+                    <div className="flex justify-end mb-2">
+                        <Link href="/perfil/editar">
+                            <Button variant="outline" size="sm">
+                                <Pencil size={14} /> Editar perfil
+                            </Button>
+                        </Link>
+                    </div>
                     <div className="flex items-center gap-4">
-                        <Avatar name={perfil.nome} size="xl" />
+                        <Avatar src={perfil.foto ? `/${perfil.foto}` : null} name={perfil.nome} size="xl" />
                         <div className="min-w-0">
                             <h1 className="font-display font-extrabold text-xl text-[#1C1917]">
                                 {perfil.nome}

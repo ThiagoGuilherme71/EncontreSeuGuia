@@ -26,7 +26,7 @@ class ClienteController extends Controller
             ->get();
 
         return Inertia::render('User/Dashboard', [
-            'perfil' => $user->only('id', 'nome', 'email', 'telefone', 'cpf', 'data_nascimento'),
+            'perfil' => $user->only('id', 'nome', 'email', 'telefone', 'cpf', 'data_nascimento', 'foto'),
             'agendamentos' => $agendamentos,
         ]);
     }
@@ -44,11 +44,16 @@ class ClienteController extends Controller
             $query->where('nome', 'like', '%' . $request->busca . '%');
         }
 
-        $trilhas = $query->latest()->get();
+        $trilhas = $query->latest()->paginate(12)->withQueryString();
         $cidades = Trilha::select('cidade')->distinct()->orderBy('cidade')->pluck('cidade');
 
         return Inertia::render('Home/Index', [
-            'trilhas' => $trilhas,
+            'trilhas' => $trilhas->items(),
+            'paginacao' => [
+                'pagina_atual' => $trilhas->currentPage(),
+                'ultima_pagina' => $trilhas->lastPage(),
+                'total' => $trilhas->total(),
+            ],
             'cidades' => $cidades,
             'filtros' => [
                 'cidade' => $request->cidade,

@@ -41,4 +41,9 @@ class Agendamento extends Model
     {
         return $this->hasOne(Avaliacao::class, 'id_agendamento');
     }
+
+    public function fotos()
+    {
+        return $this->hasMany(FotoAventura::class);
+    }
 }

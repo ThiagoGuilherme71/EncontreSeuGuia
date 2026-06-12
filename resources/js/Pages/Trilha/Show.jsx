@@ -5,11 +5,77 @@ import EmptyState from '@/Components/ui/EmptyState';
 import Badge from '@/Components/ui/Badge';
 import Avatar from '@/Components/ui/Avatar';
 import { StarDisplay } from '@/Components/ui/StarRating';
+import { Tabs, TabList, Tab, TabPanel } from '@/Components/ui/Tabs';
 import useAuth from '@/hooks/useAuth';
-import { MapPin, Mountain, ChevronLeft, Users, AlertTriangle, MessagesSquare } from 'lucide-react';
+import { MapPin, Mountain, ChevronLeft, Users, AlertTriangle, MessagesSquare, Camera, BookOpen } from 'lucide-react';
 import { cn, getDifficultyColor, formatDate } from '@/lib/utils';
 
-export default function Show({ trilha, guias = [], avaliacoes = [] }) {
+function AventuraCard({ aventura }) {
+    return (
+        <div className="bg-white rounded-2xl border-2 border-[#1C1917] shadow-[3px_3px_0px_#1C1917] overflow-hidden">
+            {/* Quem foi */}
+            <div className="flex items-center gap-3 p-3.5 bg-[#F5EDD9] border-b-2 border-[#1C1917]">
+                <div className="flex -space-x-2">
+                    <Avatar
+                        src={aventura.user?.foto ? `/${aventura.user.foto}` : null}
+                        name={aventura.user?.nome}
+                        size="md"
+                        className="ring-2 ring-[#F5EDD9]"
+                    />
+                    <Avatar
+                        src={aventura.guia?.foto ? `/${aventura.guia.foto}` : null}
+                        name={aventura.guia?.nome}
+                        size="md"
+                        className="ring-2 ring-[#F5EDD9]"
+                    />
+                </div>
+                <div className="min-w-0">
+                    <p className="text-sm text-[#1C1917]">
+                        <strong>{aventura.user?.nome?.split(' ')[0]}</strong> explorou com o guia{' '}
+                        <strong>{aventura.guia?.nome?.split(' ')[0]}</strong>
+                    </p>
+                    <p className="text-xs text-[#78716C]">{formatDate(aventura.data)}</p>
+                </div>
+            </div>
+
+            {/* Fotos */}
+            <div className={cn(
+                'grid gap-1 p-1',
+                aventura.fotos.length === 1 ? 'grid-cols-1' : aventura.fotos.length === 2 ? 'grid-cols-2' : 'grid-cols-3',
+            )}>
+                {aventura.fotos.map((foto) => (
+                    <div key={foto.id} className={cn(
+                        'relative overflow-hidden rounded-lg',
+                        aventura.fotos.length === 1 ? 'aspect-video' : 'aspect-square',
+                    )}>
+                        <img
+                            src={`/${aventura.fotos.length === 1 ? foto.path : (foto.thumb_path ?? foto.path)}`}
+                            alt={foto.legenda ?? 'Foto da aventura'}
+                            loading="lazy"
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        />
+                    </div>
+                ))}
+            </div>
+
+            {/* Legendas */}
+            {aventura.fotos.some((f) => f.legenda) && (
+                <div className="px-3.5 pb-3 pt-1">
+                    {aventura.fotos.filter((f) => f.legenda).slice(0, 2).map((f) => (
+                        <p key={f.id} className="text-xs text-[#44403C]">
+                            <span className="font-bold">
+                                {(f.postado_por_type === 'user' ? aventura.user?.nome : aventura.guia?.nome)?.split(' ')[0]}
+                            </span>{' '}
+                            {f.legenda}
+                        </p>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
+export default function Show({ trilha, guias = [], avaliacoes = [], aventuras = [] }) {
     const { isLoggedIn, isGuia } = useAuth();
 
     function handleAgendar(guia) {
@@ -64,69 +130,102 @@ export default function Show({ trilha, guias = [], avaliacoes = [] }) {
                             </Badge>
                         </div>
 
-                        <h1 className="font-display font-extrabold text-2xl md:text-4xl text-[#1C1917]">
+                        <h1 className="font-display font-extrabold text-2xl md:text-4xl text-[#1C1917] mb-4">
                             {trilha.nome}
                         </h1>
 
-                        {trilha.descricao && (
-                            <div className="mt-4 bg-white rounded-2xl border-2 border-[#1C1917] shadow-[3px_3px_0px_#1C1917] p-5">
-                                <h2 className="font-display font-bold text-base text-[#1C1917] mb-2">
-                                    Sobre a trilha
-                                </h2>
-                                <p className="text-sm md:text-base text-[#44403C] leading-relaxed whitespace-pre-line">
-                                    {trilha.descricao}
-                                </p>
-                            </div>
-                        )}
+                        <Tabs defaultValue="sobre">
+                            <TabList variant="pills">
+                                <Tab value="sobre" variant="pills">
+                                    <span className="flex items-center gap-1.5">
+                                        <BookOpen size={14} /> Sobre
+                                    </span>
+                                </Tab>
+                                <Tab value="aventuras" variant="pills">
+                                    <span className="flex items-center gap-1.5">
+                                        <Camera size={14} /> Aventuras ({aventuras.length})
+                                    </span>
+                                </Tab>
+                            </TabList>
 
-                        {/* Aviso de conexão (lugar remoto) */}
-                        <div className="mt-4 flex items-start gap-2.5 bg-[#FFF8E6] border-2 border-[#F2C94C] rounded-xl p-3.5 text-sm text-[#78716C]">
-                            <AlertTriangle size={16} className="text-[#F2C94C] shrink-0 mt-0.5" />
-                            <p>
-                                Trilhas costumam ficar em áreas remotas com sinal fraco.
-                                Combine os detalhes com seu guia antes de sair!
-                            </p>
-                        </div>
+                            <TabPanel value="sobre" className="mt-4">
+                                {trilha.descricao && (
+                                    <div className="bg-white rounded-2xl border-2 border-[#1C1917] shadow-[3px_3px_0px_#1C1917] p-5">
+                                        <h2 className="font-display font-bold text-base text-[#1C1917] mb-2">
+                                            Sobre a trilha
+                                        </h2>
+                                        <p className="text-sm md:text-base text-[#44403C] leading-relaxed whitespace-pre-line">
+                                            {trilha.descricao}
+                                        </p>
+                                    </div>
+                                )}
 
-                        {/* Avaliações públicas */}
-                        {avaliacoes.length > 0 && (
-                            <div className="mt-6">
-                                <div className="flex items-center gap-2 mb-3">
-                                    <MessagesSquare size={18} className="text-[#E07A45]" />
-                                    <h2 className="font-display font-bold text-lg text-[#1C1917]">
-                                        O que dizem os trilheiros
-                                    </h2>
+                                {/* Aviso de conexão (lugar remoto) */}
+                                <div className="mt-4 flex items-start gap-2.5 bg-[#FFF8E6] border-2 border-[#F2C94C] rounded-xl p-3.5 text-sm text-[#78716C]">
+                                    <AlertTriangle size={16} className="text-[#F2C94C] shrink-0 mt-0.5" />
+                                    <p>
+                                        Trilhas costumam ficar em áreas remotas com sinal fraco.
+                                        Combine os detalhes com seu guia antes de sair!
+                                    </p>
                                 </div>
-                                <div className="flex flex-col gap-3">
-                                    {avaliacoes.map((av) => (
-                                        <div
-                                            key={av.id}
-                                            className="bg-white rounded-2xl border-2 border-[#1C1917] shadow-[3px_3px_0px_#1C1917] p-4"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <Avatar name={av.user?.nome} size="md" />
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-bold text-[#1C1917] line-clamp-1">
-                                                        {av.user?.nome}
-                                                    </p>
-                                                    <div className="flex items-center gap-2">
-                                                        <StarDisplay value={av.nota} size={13} />
-                                                        <span className="text-xs text-[#78716C]">
-                                                            guiado por {av.guia?.nome} · {formatDate(av.created_at)}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {av.comentario && (
-                                                <p className="text-sm text-[#44403C] mt-2.5 whitespace-pre-line">
-                                                    "{av.comentario}"
-                                                </p>
-                                            )}
+
+                                {/* Avaliações públicas */}
+                                {avaliacoes.length > 0 && (
+                                    <div className="mt-6">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <MessagesSquare size={18} className="text-[#E07A45]" />
+                                            <h2 className="font-display font-bold text-lg text-[#1C1917]">
+                                                O que dizem os trilheiros
+                                            </h2>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                                        <div className="flex flex-col gap-3">
+                                            {avaliacoes.map((av) => (
+                                                <div
+                                                    key={av.id}
+                                                    className="bg-white rounded-2xl border-2 border-[#1C1917] shadow-[3px_3px_0px_#1C1917] p-4"
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <Avatar src={av.user?.foto ? `/${av.user.foto}` : null} name={av.user?.nome} size="md" />
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-sm font-bold text-[#1C1917] line-clamp-1">
+                                                                {av.user?.nome}
+                                                            </p>
+                                                            <div className="flex items-center gap-2">
+                                                                <StarDisplay value={av.nota} size={13} />
+                                                                <span className="text-xs text-[#78716C]">
+                                                                    guiado por {av.guia?.nome} · {formatDate(av.created_at)}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {av.comentario && (
+                                                        <p className="text-sm text-[#44403C] mt-2.5 whitespace-pre-line">
+                                                            "{av.comentario}"
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </TabPanel>
+
+                            <TabPanel value="aventuras" className="mt-4">
+                                {aventuras.length > 0 ? (
+                                    <div className="flex flex-col gap-4">
+                                        {aventuras.map((av) => (
+                                            <AventuraCard key={av.id} aventura={av} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <EmptyState
+                                        icon={Camera}
+                                        title="Nenhuma aventura registrada ainda"
+                                        description="Quando alguém concluir essa trilha e postar fotos, elas aparecem aqui. Seja o primeiro! 📸"
+                                    />
+                                )}
+                            </TabPanel>
+                        </Tabs>
                     </div>
 
                     {/* Guias disponíveis */}

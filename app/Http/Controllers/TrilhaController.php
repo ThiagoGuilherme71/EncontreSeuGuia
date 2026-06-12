@@ -40,16 +40,39 @@ class TrilhaController extends Controller
             });
 
         // avaliações públicas de trilhas concluídas nessa trilha
-        $avaliacoes = Avaliacao::with(['user:id,nome', 'guia:id,nome'])
+        $avaliacoes = Avaliacao::with(['user:id,nome,foto', 'guia:id,nome,foto'])
             ->whereIn('id_agendamento', \App\Models\Agendamento::where('id_trilha', $trilha->id)->pluck('id'))
             ->latest()
             ->limit(6)
             ->get();
 
+        // aventuras: trilhas concluídas com fotos postadas pelos participantes
+        $aventuras = \App\Models\Agendamento::with(['user:id,nome,foto', 'guia:id,nome,foto', 'fotos'])
+            ->where('id_trilha', $trilha->id)
+            ->where('status', 'completed')
+            ->whereHas('fotos')
+            ->orderByDesc('data')
+            ->limit(20)
+            ->get()
+            ->map(fn ($a) => [
+                'id' => $a->id,
+                'data' => $a->data,
+                'user' => $a->user,
+                'guia' => $a->guia,
+                'fotos' => $a->fotos->map(fn ($f) => [
+                    'id' => $f->id,
+                    'path' => $f->path,
+                    'thumb_path' => $f->thumb_path,
+                    'legenda' => $f->legenda,
+                    'postado_por_type' => $f->postado_por_type,
+                ])->values(),
+            ]);
+
         return Inertia::render('Trilha/Show', [
             'trilha' => $trilha,
             'guias' => $guias,
             'avaliacoes' => $avaliacoes,
+            'aventuras' => $aventuras,
         ]);
     }
 
@@ -81,8 +104,7 @@ class TrilhaController extends Controller
         ]);
 
         if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
-            $path = $request->file('foto')->store('trilhas', 'public');
-            $trilha->update(['foto' => 'storage/' . $path]);
+            $trilha->update(['foto' => \App\Support\ImageResizer::save($request->file('foto'), 'trilhas', 1600)['path']]);
         }
 
         // o criador já entra inscrito na trilha
@@ -121,8 +143,7 @@ class TrilhaController extends Controller
         $trilha->update($request->only('nome', 'descricao', 'id_dificuldade', 'cidade'));
 
         if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
-            $path = $request->file('foto')->store('trilhas', 'public');
-            $trilha->update(['foto' => 'storage/' . $path]);
+            $trilha->update(['foto' => \App\Support\ImageResizer::save($request->file('foto'), 'trilhas', 1600)['path']]);
         }
 
         $msg = $trilha->criado_por_guia === $guia->id

@@ -65,7 +65,7 @@ class GuiaController extends Controller
         $totalAvaliacoes = Avaliacao::where('id_guia', $guia->id)->count();
 
         return Inertia::render('Guia/Conta', [
-            'perfil' => $guia->only('id', 'nome', 'email', 'telefone', 'cep', 'endereco', 'anos_experiencia', 'link_instagram', 'link_facebook', 'data_nascimento'),
+            'perfil' => $guia->only('id', 'nome', 'email', 'telefone', 'cep', 'endereco', 'anos_experiencia', 'link_instagram', 'link_facebook', 'data_nascimento', 'foto'),
             'idiomas' => $guia->idiomas()->pluck('nome_idioma'),
             'media_avaliacoes' => $mediaAvaliacoes ? round($mediaAvaliacoes, 1) : null,
             'total_avaliacoes' => $totalAvaliacoes,

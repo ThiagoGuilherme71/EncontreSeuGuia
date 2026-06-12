@@ -68,12 +68,20 @@ class AgendamentoController extends Controller
 
     public function show(Request $request, $id)
     {
-        $agendamento = Agendamento::with(['trilha.dificuldade', 'guia:id,nome,telefone,anos_experiencia', 'user:id,nome,telefone,email', 'avaliacao'])
+        $agendamento = Agendamento::with(['trilha.dificuldade', 'guia:id,nome,telefone,anos_experiencia,foto', 'user:id,nome,telefone,email,foto', 'avaliacao'])
             ->findOrFail($id);
 
         $this->authorizeParticipant($request, $agendamento);
 
         $souUser = (bool) $request->user('web');
+        $souGuia = (bool) $request->user('guia');
+
+        $fotos = $agendamento->fotos()->latest()->get()->map(function ($f) {
+            $f->append('autor');
+            return $f;
+        });
+
+        $minhasFotos = $fotos->where('postado_por_type', $souUser ? 'user' : 'guia')->count();
 
         return Inertia::render('Agendamento/Show', [
             'agendamento' => $agendamento,
@@ -82,6 +90,9 @@ class AgendamentoController extends Controller
             'pode_avaliar' => $souUser
                 && $agendamento->status === 'completed'
                 && !$agendamento->avaliacao,
+            'fotos' => $fotos->values(),
+            'pode_postar_foto' => $agendamento->status === 'completed'
+                && $minhasFotos < \App\Http\Controllers\FotoAventuraController::MAX_FOTOS_POR_PESSOA,
         ]);
     }
 

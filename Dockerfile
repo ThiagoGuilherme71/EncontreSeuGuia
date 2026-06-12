@@ -7,10 +7,13 @@ RUN apt-get update && apt-get install -y \
     unzip \
     curl \
     libpng-dev \
+    libjpeg-dev \
+    libwebp-dev \
     libonig-dev \
     libxml2-dev \
     zip \
     npm \
+    && docker-php-ext-configure gd --with-jpeg --with-webp \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 # Instala Composer

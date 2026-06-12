@@ -73,6 +73,14 @@ Route::middleware('auth:web,guia')->group(function () {
     Route::get('/chat/{id}', [\App\Http\Controllers\ChatController::class, 'show'])->whereNumber('id')->name('chat.show');
     Route::post('/chat/{id}', [\App\Http\Controllers\ChatController::class, 'store'])->whereNumber('id')->name('chat.store');
 
+    //perfil
+    Route::get('/perfil/editar', [\App\Http\Controllers\PerfilController::class, 'edit'])->name('perfil.edit');
+    Route::post('/perfil', [\App\Http\Controllers\PerfilController::class, 'update'])->name('perfil.update');
+
+    //fotos da aventura
+    Route::post('/agendamentos/{id}/fotos', [\App\Http\Controllers\FotoAventuraController::class, 'store'])->whereNumber('id')->name('fotos.store');
+    Route::delete('/fotos-aventura/{id}', [\App\Http\Controllers\FotoAventuraController::class, 'destroy'])->whereNumber('id')->name('fotos.destroy');
+
     //notificações
     Route::get('/notificacoes', [\App\Http\Controllers\NotificacaoController::class, 'index'])->name('notificacoes.index');
     Route::patch('/notificacoes/ler-todas', [\App\Http\Controllers\NotificacaoController::class, 'markAllRead'])->name('notificacoes.lerTodas');

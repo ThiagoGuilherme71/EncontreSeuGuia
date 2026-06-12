@@ -32,6 +32,7 @@ class Guia extends Authenticatable
         'telefone',
         'data_nascimento',
         'cpf',
+        'foto',
     ];
 
     /**

@@ -1,9 +1,10 @@
 import { Head, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AppLayout from '@/Layouts/AppLayout';
 import TrilhaCard from '@/Components/domain/TrilhaCard';
 import EmptyState from '@/Components/ui/EmptyState';
-import { Search, MapPin, Compass, X } from 'lucide-react';
+import Button from '@/Components/ui/Button';
+import { Search, MapPin, Compass, X, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 function Hero({ busca, onSearch }) {
@@ -96,7 +97,22 @@ function CityFilter({ cidades, atual, onChange }) {
     );
 }
 
-export default function Index({ trilhas = [], cidades = [], filtros = {} }) {
+export default function Index({ trilhas = [], paginacao = {}, cidades = [], filtros = {} }) {
+    const [lista, setLista] = useState(trilhas);
+    const [carregando, setCarregando] = useState(false);
+
+    // página 1 substitui a lista; páginas seguintes acumulam
+    useEffect(() => {
+        if (paginacao.pagina_atual === 1) {
+            setLista(trilhas);
+        } else {
+            setLista((atual) => {
+                const ids = new Set(atual.map((t) => t.id));
+                return [...atual, ...trilhas.filter((t) => !ids.has(t.id))];
+            });
+        }
+    }, [trilhas, paginacao.pagina_atual]);
+
     function applyFilters(next) {
         router.get('/landing-page', {
             cidade: next.cidade ?? undefined,
@@ -104,7 +120,22 @@ export default function Index({ trilhas = [], cidades = [], filtros = {} }) {
         }, { preserveState: true, preserveScroll: true });
     }
 
+    function carregarMais() {
+        setCarregando(true);
+        router.get('/landing-page', {
+            cidade: filtros.cidade ?? undefined,
+            busca: filtros.busca || undefined,
+            page: (paginacao.pagina_atual ?? 1) + 1,
+        }, {
+            preserveState: true,
+            preserveScroll: true,
+            only: ['trilhas', 'paginacao'],
+            onFinish: () => setCarregando(false),
+        });
+    }
+
     const hasFiltro = filtros.cidade || filtros.busca;
+    const temMais = (paginacao.pagina_atual ?? 1) < (paginacao.ultima_pagina ?? 1);
 
     return (
         <AppLayout>
@@ -133,7 +164,7 @@ export default function Index({ trilhas = [], cidades = [], filtros = {} }) {
                 {hasFiltro && (
                     <div className="flex items-center gap-2 mb-4 text-sm text-[#78716C]">
                         <span>
-                            {trilhas.length} {trilhas.length === 1 ? 'trilha encontrada' : 'trilhas encontradas'}
+                            {paginacao.total ?? lista.length} {(paginacao.total ?? lista.length) === 1 ? 'trilha encontrada' : 'trilhas encontradas'}
                             {filtros.busca && <> para <strong className="text-[#1C1917]">"{filtros.busca}"</strong></>}
                             {filtros.cidade && <> em <strong className="text-[#1C1917]">{filtros.cidade}</strong></>}
                         </span>
@@ -147,12 +178,26 @@ export default function Index({ trilhas = [], cidades = [], filtros = {} }) {
                 )}
 
                 {/* Grid de trilhas */}
-                {trilhas.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                        {trilhas.map((trilha) => (
-                            <TrilhaCard key={trilha.id} trilha={trilha} />
-                        ))}
-                    </div>
+                {lista.length > 0 ? (
+                    <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                            {lista.map((trilha) => (
+                                <TrilhaCard key={trilha.id} trilha={trilha} />
+                            ))}
+                        </div>
+
+                        {temMais && (
+                            <div className="flex justify-center mt-8">
+                                <Button
+                                    variant="outline"
+                                    onClick={carregarMais}
+                                    loading={carregando}
+                                >
+                                    <ChevronDown size={16} /> Carregar mais trilhas
+                                </Button>
+                            </div>
+                        )}
+                    </>
                 ) : (
                     <EmptyState
                         icon={Compass}

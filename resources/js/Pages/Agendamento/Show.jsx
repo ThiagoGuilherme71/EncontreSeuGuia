@@ -6,6 +6,7 @@ import Modal from '@/Components/ui/Modal';
 import Avatar from '@/Components/ui/Avatar';
 import { Textarea } from '@/Components/ui/Input';
 import { StarDisplay, StarInput } from '@/Components/ui/StarRating';
+import FotosAventura from '@/Components/domain/FotosAventura';
 import useAuth from '@/hooks/useAuth';
 import {
     ChevronLeft, CalendarDays, Clock, Users, MapPin, FileText,
@@ -108,7 +109,7 @@ function AvaliacaoForm({ agendamento }) {
     );
 }
 
-export default function Show({ agendamento, pode_cancelar, pode_chat, pode_avaliar }) {
+export default function Show({ agendamento, pode_cancelar, pode_chat, pode_avaliar, fotos = [], pode_postar_foto = false }) {
     const { isGuia } = useAuth();
     const { flash } = usePage().props;
     const [rejectOpen, setRejectOpen] = useState(false);
@@ -227,6 +228,16 @@ export default function Show({ agendamento, pode_cancelar, pode_chat, pode_avali
                             </Link>
                         )}
                     </div>
+                )}
+
+                {/* Fotos da aventura (trilha concluída) */}
+                {agendamento.status === 'completed' && (
+                    <FotosAventura
+                        agendamento={agendamento}
+                        fotos={fotos}
+                        podePostar={pode_postar_foto}
+                        eu={isGuia ? 'guia' : 'user'}
+                    />
                 )}
 
                 {/* Avaliação (trilheiro, trilha concluída) */}
