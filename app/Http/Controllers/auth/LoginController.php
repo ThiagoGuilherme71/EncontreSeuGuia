@@ -5,13 +5,14 @@ namespace App\Http\Controllers\auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class LoginController extends Controller
 {
 
     public function showLoginForm()
     {
-        return view('main');
+        return Inertia::render('Auth/Login');
     }
 
 
@@ -24,7 +25,7 @@ class LoginController extends Controller
 
         // Tenta autenticar como trilheiro
         if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->route('landing-page');
+            return redirect()->intended(route('landing-page'));
         }
 
         // Se falhar, tenta autenticar como guia

@@ -10,12 +10,13 @@ use App\Models\Trilha;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
 
 class SignupController extends Controller
 {
     public function showSignupForm()
     {
-        return view('auth.signup');
+        return Inertia::render('Auth/Signup');
     }
 
     public function signup(Request $request)
@@ -49,27 +50,23 @@ class SignupController extends Controller
     public function showGuiaSignupForm()
     {
         $idiomas = Idioma::all();
-        $trilhas = Trilha::all();
-        return view('auth.signup-guia', compact('idiomas', 'trilhas'));
+        $trilhas = Trilha::select('id', 'nome', 'cidade')->get();
+        return Inertia::render('Auth/SignupGuia', [
+            'idiomas' => $idiomas,
+            'trilhas' => $trilhas,
+        ]);
     }
 
     public function signupGuia(Request $request)
     {
-//        $request->validate([
-//            'nome' => 'required',
-//            'email' => 'required|email|unique:guias,email',
-//            'telefone' => 'required|string|max:18',
-//            'data_nascimento' => 'required|date',
-//            'cpf' => 'required|string|unique:guias,cpf',
-//            'cep' => 'required|string|unique:guias,cep',
-//            'endereco' => 'required',
-//            'link_instagram' => 'required',
-//            'link_facebook' => 'required',
-//            'doc_frente' => 'required',
-//            'doc_verso' => 'required',
-//            'password' => 'required|string|min:6|confirmed',
-//        ]);
-
+        $request->validate([
+            'nome' => 'required',
+            'email' => 'required|email|unique:guias,email',
+            'telefone' => 'required|string|max:18',
+            'data_nascimento' => 'required|date',
+            'cpf' => 'required|string|unique:guias,cpf',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
 
         $guia = Guia::create([
             'nome' => $request->nome,
@@ -93,8 +90,7 @@ class SignupController extends Controller
             $guia->trilhas()->sync($request->trilhas);
         }
 
-        auth()->login($guia);
-        // tem que mudar essa view e criar um dash do guia
+        auth('guia')->login($guia);
         return redirect()->route('guia-dash')->with('success', 'Cadastro realizado com sucesso!');
     }
 

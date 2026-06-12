@@ -20,6 +20,7 @@ class Trilha extends Model
         'id_dificuldade',
         'cidade',
         'foto',
+        'criado_por_guia',
     ];
 
     /**
@@ -42,7 +43,18 @@ class Trilha extends Model
     }
     public function guias()
     {
-        return $this->belongsToMany(Guia::class, 'trilhas_guias', 'trilha_id', 'guia_id');
+        return $this->belongsToMany(Guia::class, 'trilhas_guias', 'trilha_id', 'guia_id')
+            ->withPivot('congelada');
     }
 
+    // Só guias com inscrição ativa (aparecem como disponíveis)
+    public function guiasAtivos()
+    {
+        return $this->guias()->wherePivot('congelada', false);
+    }
+
+    public function criador()
+    {
+        return $this->belongsTo(Guia::class, 'criado_por_guia');
+    }
 }
