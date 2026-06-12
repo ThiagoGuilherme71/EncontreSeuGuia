@@ -1,14 +1,16 @@
-import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import AppLayout from '@/Layouts/AppLayout';
 import Button from '@/Components/ui/Button';
 import Modal from '@/Components/ui/Modal';
 import Avatar from '@/Components/ui/Avatar';
 import { Textarea } from '@/Components/ui/Input';
+import { StarDisplay, StarInput } from '@/Components/ui/StarRating';
 import useAuth from '@/hooks/useAuth';
 import {
     ChevronLeft, CalendarDays, Clock, Users, MapPin, FileText,
     CreditCard, Hourglass, PartyPopper, XCircle, Ban, CheckCircle2, MessageSquareText,
+    MessageCircle, Star,
 } from 'lucide-react';
 import { cn, formatDateLong, formatTime, formatCurrency, getDifficultyColor } from '@/lib/utils';
 
@@ -59,7 +61,54 @@ function InfoRow({ icon: Icon, label, children }) {
     );
 }
 
-export default function Show({ agendamento, pode_cancelar }) {
+function AvaliacaoForm({ agendamento }) {
+    const { data, setData, post, processing, errors } = useForm({
+        nota: 0,
+        comentario: '',
+    });
+
+    function submit(e) {
+        e.preventDefault();
+        post(`/agendamentos/${agendamento.id}/avaliar`, { preserveScroll: true });
+    }
+
+    return (
+        <form
+            onSubmit={submit}
+            className="bg-[#FFF8E6] rounded-2xl border-2 border-[#F2C94C] shadow-[3px_3px_0px_#1C1917] p-5 mt-4"
+        >
+            <h2 className="font-display font-bold text-[#1C1917] flex items-center gap-2">
+                <Star size={17} className="text-[#F2C94C]" /> Como foi a trilha?
+            </h2>
+            <p className="text-xs text-[#78716C] mt-0.5 mb-3">
+                Avalie {agendamento.guia?.nome} — sua opinião ajuda outros trilheiros.
+            </p>
+
+            <StarInput value={data.nota} onChange={(n) => setData('nota', n)} size={30} />
+            {errors.nota && <p className="text-xs text-red-600 mt-1">{errors.nota}</p>}
+
+            <Textarea
+                value={data.comentario}
+                onChange={(e) => setData('comentario', e.target.value)}
+                error={errors.comentario}
+                placeholder="Conta como foi! (opcional)"
+                rows={3}
+                className="mt-3"
+            />
+
+            <Button
+                type="submit"
+                loading={processing}
+                disabled={data.nota === 0}
+                className="w-full mt-3"
+            >
+                Enviar avaliação
+            </Button>
+        </form>
+    );
+}
+
+export default function Show({ agendamento, pode_cancelar, pode_chat, pode_avaliar }) {
     const { isGuia } = useAuth();
     const { flash } = usePage().props;
     const [rejectOpen, setRejectOpen] = useState(false);
@@ -160,13 +209,43 @@ export default function Show({ agendamento, pode_cancelar }) {
                     </Link>
                 )}
 
-                {/* Recibo (pago) */}
-                {pago && (
-                    <Link href={`/agendamentos/${agendamento.id}/recibo`} className="block mt-4">
-                        <Button variant="outline" size="lg" className="w-full">
-                            <FileText size={18} /> Ver recibo
-                        </Button>
-                    </Link>
+                {/* Chat + Recibo */}
+                {(pode_chat || pago) && (
+                    <div className="flex gap-3 mt-4">
+                        {pode_chat && (
+                            <Link href={`/chat/${agendamento.id}`} className="flex-1">
+                                <Button size="lg" className="w-full" variant={pago ? 'outline' : 'primary'}>
+                                    <MessageCircle size={18} /> Chat
+                                </Button>
+                            </Link>
+                        )}
+                        {pago && (
+                            <Link href={`/agendamentos/${agendamento.id}/recibo`} className="flex-1">
+                                <Button variant="outline" size="lg" className="w-full">
+                                    <FileText size={18} /> Recibo
+                                </Button>
+                            </Link>
+                        )}
+                    </div>
+                )}
+
+                {/* Avaliação (trilheiro, trilha concluída) */}
+                {pode_avaliar && <AvaliacaoForm agendamento={agendamento} />}
+
+                {/* Avaliação já feita */}
+                {agendamento.avaliacao && (
+                    <div className="bg-white rounded-2xl border-2 border-[#1C1917] shadow-[3px_3px_0px_#1C1917] p-5 mt-4">
+                        <h2 className="font-display font-bold text-[#1C1917] flex items-center gap-2 mb-2">
+                            <Star size={16} className="text-[#F2C94C]" />
+                            {isGuia ? 'Avaliação recebida' : 'Sua avaliação'}
+                        </h2>
+                        <StarDisplay value={agendamento.avaliacao.nota} size={18} />
+                        {agendamento.avaliacao.comentario && (
+                            <p className="text-sm text-[#44403C] mt-2 whitespace-pre-line">
+                                "{agendamento.avaliacao.comentario}"
+                            </p>
+                        )}
+                    </div>
                 )}
 
                 {/* Detalhes */}

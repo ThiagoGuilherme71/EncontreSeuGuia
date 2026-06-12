@@ -59,11 +59,19 @@ Route::middleware('auth:guia')->group(function () {
     Route::patch('/agendamentos/{id}/rejeitar', [\App\Http\Controllers\AgendamentoController::class, 'reject'])->name('agendamentos.reject');
 });
 
+//avaliações — trilheiro
+Route::post('/agendamentos/{id}/avaliar', [\App\Http\Controllers\AvaliacaoController::class, 'store'])
+    ->middleware('auth:web')->whereNumber('id')->name('avaliacoes.store');
+
 //agendamentos — ambos
 Route::middleware('auth:web,guia')->group(function () {
     Route::get('/agendamentos/{id}', [\App\Http\Controllers\AgendamentoController::class, 'show'])->whereNumber('id')->name('agendamentos.show');
     Route::patch('/agendamentos/{id}/cancelar', [\App\Http\Controllers\AgendamentoController::class, 'cancel'])->name('agendamentos.cancel');
     Route::get('/agendamentos/{id}/recibo', [\App\Http\Controllers\AgendamentoController::class, 'receipt'])->name('agendamentos.receipt');
+
+    //chat
+    Route::get('/chat/{id}', [\App\Http\Controllers\ChatController::class, 'show'])->whereNumber('id')->name('chat.show');
+    Route::post('/chat/{id}', [\App\Http\Controllers\ChatController::class, 'store'])->whereNumber('id')->name('chat.store');
 
     //notificações
     Route::get('/notificacoes', [\App\Http\Controllers\NotificacaoController::class, 'index'])->name('notificacoes.index');

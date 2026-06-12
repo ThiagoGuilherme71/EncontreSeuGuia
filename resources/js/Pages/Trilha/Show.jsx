@@ -3,11 +3,13 @@ import AppLayout from '@/Layouts/AppLayout';
 import GuiaCard from '@/Components/domain/GuiaCard';
 import EmptyState from '@/Components/ui/EmptyState';
 import Badge from '@/Components/ui/Badge';
+import Avatar from '@/Components/ui/Avatar';
+import { StarDisplay } from '@/Components/ui/StarRating';
 import useAuth from '@/hooks/useAuth';
-import { MapPin, Mountain, ChevronLeft, Users, AlertTriangle } from 'lucide-react';
-import { cn, getDifficultyColor } from '@/lib/utils';
+import { MapPin, Mountain, ChevronLeft, Users, AlertTriangle, MessagesSquare } from 'lucide-react';
+import { cn, getDifficultyColor, formatDate } from '@/lib/utils';
 
-export default function Show({ trilha, guias = [] }) {
+export default function Show({ trilha, guias = [], avaliacoes = [] }) {
     const { isLoggedIn, isGuia } = useAuth();
 
     function handleAgendar(guia) {
@@ -85,6 +87,46 @@ export default function Show({ trilha, guias = [] }) {
                                 Combine os detalhes com seu guia antes de sair!
                             </p>
                         </div>
+
+                        {/* Avaliações públicas */}
+                        {avaliacoes.length > 0 && (
+                            <div className="mt-6">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <MessagesSquare size={18} className="text-[#E07A45]" />
+                                    <h2 className="font-display font-bold text-lg text-[#1C1917]">
+                                        O que dizem os trilheiros
+                                    </h2>
+                                </div>
+                                <div className="flex flex-col gap-3">
+                                    {avaliacoes.map((av) => (
+                                        <div
+                                            key={av.id}
+                                            className="bg-white rounded-2xl border-2 border-[#1C1917] shadow-[3px_3px_0px_#1C1917] p-4"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <Avatar name={av.user?.nome} size="md" />
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-bold text-[#1C1917] line-clamp-1">
+                                                        {av.user?.nome}
+                                                    </p>
+                                                    <div className="flex items-center gap-2">
+                                                        <StarDisplay value={av.nota} size={13} />
+                                                        <span className="text-xs text-[#78716C]">
+                                                            guiado por {av.guia?.nome} · {formatDate(av.created_at)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {av.comentario && (
+                                                <p className="text-sm text-[#44403C] mt-2.5 whitespace-pre-line">
+                                                    "{av.comentario}"
+                                                </p>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Guias disponíveis */}

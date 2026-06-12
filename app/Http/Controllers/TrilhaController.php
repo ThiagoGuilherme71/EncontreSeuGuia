@@ -39,9 +39,17 @@ class TrilhaController extends Controller
                 return $guia;
             });
 
+        // avaliações públicas de trilhas concluídas nessa trilha
+        $avaliacoes = Avaliacao::with(['user:id,nome', 'guia:id,nome'])
+            ->whereIn('id_agendamento', \App\Models\Agendamento::where('id_trilha', $trilha->id)->pluck('id'))
+            ->latest()
+            ->limit(6)
+            ->get();
+
         return Inertia::render('Trilha/Show', [
             'trilha' => $trilha,
             'guias' => $guias,
+            'avaliacoes' => $avaliacoes,
         ]);
     }
 

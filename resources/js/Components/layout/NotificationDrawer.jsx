@@ -1,6 +1,6 @@
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
 import { Fragment } from 'react';
-import { X, Bell, CheckCheck, MapPin, Calendar, MessageCircle } from 'lucide-react';
+import { X, Bell, CheckCheck, MapPin, Calendar, MessageCircle, Star } from 'lucide-react';
 import { router } from '@inertiajs/react';
 import { cn } from '@/lib/utils';
 import { formatDate } from '@/lib/utils';
@@ -11,6 +11,7 @@ const tipoIcon = {
     nova_mensagem:         { icon: MessageCircle, color: 'text-[#E07A45] bg-orange-50' },
     proposta_recebida:     { icon: Bell,     color: 'text-[#A27738] bg-[#F5EDD9]' },
     agendamento_cancelado: { icon: X,        color: 'text-gray-500 bg-gray-100' },
+    avaliacao_recebida:    { icon: Star,     color: 'text-[#F2C94C] bg-[#FFF8E6]' },
 };
 
 function NotifItem({ notif, onClose }) {
@@ -20,8 +21,10 @@ function NotifItem({ notif, onClose }) {
 
     function handleClick() {
         router.patch(`/notificacoes/${notif.id}/ler`, {}, { preserveState: true });
-        if (notif.data?.agendamento_id) {
-            router.visit(`/agendamentos/${notif.data.agendamento_id}`);
+        const url = notif.data?.url
+            ?? (notif.data?.agendamento_id ? `/agendamentos/${notif.data.agendamento_id}` : null);
+        if (url) {
+            router.visit(url);
             onClose();
         }
     }

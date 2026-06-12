@@ -3,7 +3,7 @@ import Button from '@/Components/ui/Button';
 import { Input, Textarea, Select } from '@/Components/ui/Input';
 import { ImagePlus, Mountain, X } from 'lucide-react';
 
-export default function TrilhaForm({ data, setData, errors = {}, onSubmit, processing, submitLabel = 'Salvar', fotoAtual = null }) {
+export default function TrilhaForm({ data, setData, errors = {}, onSubmit, processing, submitLabel = 'Salvar', fotoAtual = null, dificuldades = [] }) {
     const [preview, setPreview] = useState(fotoAtual ? `/${fotoAtual}` : null);
 
     function handleFoto(e) {
@@ -81,7 +81,7 @@ export default function TrilhaForm({ data, setData, errors = {}, onSubmit, proce
                     required
                 >
                     <option value="">Selecione...</option>
-                    {(data._dificuldades ?? []).map((d) => (
+                    {dificuldades.map((d) => (
                         <option key={d.id} value={d.id}>{d.descricao}</option>
                     ))}
                 </Select>

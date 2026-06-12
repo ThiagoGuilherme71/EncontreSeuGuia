@@ -68,14 +68,20 @@ class AgendamentoController extends Controller
 
     public function show(Request $request, $id)
     {
-        $agendamento = Agendamento::with(['trilha.dificuldade', 'guia:id,nome,telefone,anos_experiencia', 'user:id,nome,telefone,email'])
+        $agendamento = Agendamento::with(['trilha.dificuldade', 'guia:id,nome,telefone,anos_experiencia', 'user:id,nome,telefone,email', 'avaliacao'])
             ->findOrFail($id);
 
         $this->authorizeParticipant($request, $agendamento);
 
+        $souUser = (bool) $request->user('web');
+
         return Inertia::render('Agendamento/Show', [
             'agendamento' => $agendamento,
             'pode_cancelar' => $this->podeCancelar($agendamento),
+            'pode_chat' => in_array($agendamento->status, ['accepted', 'completed']),
+            'pode_avaliar' => $souUser
+                && $agendamento->status === 'completed'
+                && !$agendamento->avaliacao,
         ]);
     }
 
