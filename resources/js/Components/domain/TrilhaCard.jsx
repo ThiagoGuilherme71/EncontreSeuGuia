@@ -1,10 +1,19 @@
 import { Link } from '@inertiajs/react';
-import { MapPin, Users, Mountain } from 'lucide-react';
-import Badge from '@/Components/ui/Badge';
+import { MapPin, Users, Mountain, Ruler, Clock } from 'lucide-react';
 import { cn, getDifficultyColor } from '@/lib/utils';
+
+function formatTempo(horas) {
+    if (horas == null) return null;
+    const h = Math.floor(horas);
+    const min = Math.round((horas % 1) * 60);
+    if (h === 0) return `${min}min`;
+    if (min === 0) return `${h}h`;
+    return `${h}h ${min}min`;
+}
 
 export default function TrilhaCard({ trilha, className }) {
     const dificuldade = trilha.dificuldade?.descricao;
+    const tempo = formatTempo(trilha.tempo_estimado_horas);
 
     return (
         <Link
@@ -32,8 +41,8 @@ export default function TrilhaCard({ trilha, className }) {
                 )}
                 {dificuldade && (
                     <span className={cn(
-                        'absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-lg border-2 border-[#1C1917]',
-                        'bg-white shadow-[2px_2px_0px_#1C1917]',
+                        'absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-lg border-2 shadow-[2px_2px_0px_rgba(0,0,0,0.15)]',
+                        getDifficultyColor(dificuldade),
                     )}>
                         {dificuldade}
                     </span>
@@ -51,10 +60,20 @@ export default function TrilhaCard({ trilha, className }) {
                     <span className="line-clamp-1">{trilha.cidade}</span>
                 </div>
 
-                {trilha.descricao && (
-                    <p className="text-sm text-[#78716C] mt-2 line-clamp-2">
-                        {trilha.descricao}
-                    </p>
+                {/* Distância e tempo */}
+                {(trilha.distancia_km != null || tempo) && (
+                    <div className="flex items-center gap-3 mt-2">
+                        {trilha.distancia_km != null && (
+                            <span className="flex items-center gap-1 text-xs font-semibold text-[#2D6A4F] bg-[#D8EFE3] px-2 py-0.5 rounded-lg">
+                                <Ruler size={11} /> {trilha.distancia_km} km
+                            </span>
+                        )}
+                        {tempo && (
+                            <span className="flex items-center gap-1 text-xs font-semibold text-[#78716C] bg-[#F5EDD9] px-2 py-0.5 rounded-lg">
+                                <Clock size={11} /> {tempo}
+                            </span>
+                        )}
+                    </div>
                 )}
 
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#E3CDA8]">

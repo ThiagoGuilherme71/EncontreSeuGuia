@@ -7,9 +7,16 @@ export default function Edit({ trilha, dificuldades = [], sou_criador = false, e
     const { data, setData, post, processing } = useForm({
         nome: trilha.nome ?? '',
         descricao: trilha.descricao ?? '',
+        estado: trilha.estado ?? '',
         cidade: trilha.cidade ?? '',
         id_dificuldade: trilha.id_dificuldade ?? '',
         foto: null,
+        distancia_km: trilha.distancia_km ?? '',
+        tempo_estimado_horas: trilha.tempo_estimado_horas ?? '',
+        ponto_encontro_lat: trilha.ponto_encontro_lat ?? null,
+        ponto_encontro_lng: trilha.ponto_encontro_lng ?? null,
+        ponto_encontro_descricao: trilha.ponto_encontro_descricao ?? '',
+        o_que_levar: trilha.o_que_levar ?? [],
     });
 
     function submit(e) {

@@ -49,7 +49,7 @@ export default function Dashboard({ trilhas_criadas = [], trilhas_cadastradas = 
                 )}
 
                 <Tabs defaultValue="propostas">
-                    <TabList variant="pills" className="overflow-x-auto scrollbar-hide">
+                    <TabList variant="pills">
                         <Tab value="propostas" variant="pills">
                             <span className="flex items-center gap-1.5 whitespace-nowrap">
                                 <Inbox size={14} /> Propostas

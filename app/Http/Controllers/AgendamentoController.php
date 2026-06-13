@@ -10,18 +10,28 @@ use Inertia\Inertia;
 
 class AgendamentoController extends Controller
 {
-    // Sandbox: preço fixo por pessoa enquanto trilhas não têm precificação própria
-    public const PRECO_POR_PESSOA = 150.00;
-
     public function create(Request $request)
     {
         $trilha = Trilha::with('dificuldade')->findOrFail($request->query('trilha'));
         $guia = $trilha->guias()->findOrFail($request->query('guia'));
 
+        $agendamentosGuia = Agendamento::with('trilha:id,nome,tempo_estimado_horas')
+            ->where('id_guia', $guia->id)
+            ->whereIn('status', ['pending', 'accepted'])
+            ->where('data', '>=', now()->toDateString())
+            ->get()
+            ->map(fn ($a) => [
+                'data'          => $a->data->toDateString(),
+                'horario'       => substr($a->horario, 0, 5),
+                'duracao_horas' => $a->trilha->tempo_estimado_horas,
+                'trilha_nome'   => $a->trilha->nome,
+            ]);
+
         return Inertia::render('Agendamento/Create', [
-            'trilha' => $trilha,
-            'guia' => $guia->only('id', 'nome', 'anos_experiencia'),
-            'preco_por_pessoa' => self::PRECO_POR_PESSOA,
+            'trilha'           => $trilha,
+            'guia'             => $guia->only('id', 'nome', 'anos_experiencia'),
+            'preco_por_pessoa' => $guia->pivot->preco_por_pessoa,
+            'agendamentos_guia' => $agendamentosGuia,
         ]);
     }
 
@@ -41,6 +51,20 @@ class AgendamentoController extends Controller
         $user = $request->user('web');
         $trilha = Trilha::findOrFail($request->id_trilha);
 
+        $conflito = $this->verificarConflito(
+            $request->id_guia,
+            $request->data,
+            $request->horario,
+            $trilha->tempo_estimado_horas
+        );
+
+        if ($conflito) {
+            return back()->withErrors(['horario' => $conflito])->withInput();
+        }
+
+        $guia = $trilha->guias()->findOrFail($request->id_guia);
+        $preco = $guia->pivot->preco_por_pessoa ?? 0;
+
         $agendamento = Agendamento::create([
             'id_users' => $user->id,
             'id_trilha' => $trilha->id,
@@ -50,7 +74,7 @@ class AgendamentoController extends Controller
             'num_pessoas' => $request->num_pessoas,
             'observacoes' => $request->observacoes,
             'status' => 'pending',
-            'total_valor' => $request->num_pessoas * self::PRECO_POR_PESSOA,
+            'total_valor' => $request->num_pessoas * $preco,
         ]);
 
         Notificacao::notificar(
@@ -228,6 +252,35 @@ class AgendamentoController extends Controller
         return Inertia::render('Agendamento/Receipt', [
             'agendamento' => $agendamento,
         ]);
+    }
+
+    private function verificarConflito(int $idGuia, string $data, string $horario, ?float $duracao): ?string
+    {
+        $agendamentos = Agendamento::with('trilha:id,nome,tempo_estimado_horas')
+            ->where('id_guia', $idGuia)
+            ->whereIn('status', ['pending', 'accepted'])
+            ->whereDate('data', $data)
+            ->get();
+
+        [$novaH, $novaM] = array_map('intval', explode(':', $horario));
+        $novoInicio = $novaH * 60 + $novaM;
+        $novoDurMin = (int)(($duracao ?? 2) * 60);
+        $novoFim    = $novoInicio + $novoDurMin;
+
+        foreach ($agendamentos as $ag) {
+            [$h, $m] = array_map('intval', explode(':', $ag->horario));
+            $inicio  = $h * 60 + $m;
+            $durMin  = (int)(($ag->trilha->tempo_estimado_horas ?? 2) * 60);
+            $fim     = $inicio + $durMin;
+
+            if ($novoInicio < $fim && $novoFim > $inicio) {
+                $livreStr  = sprintf('%02d:%02d', intdiv($fim, 60), $fim % 60);
+                $inicioStr = substr($ag->horario, 0, 5);
+                return "Este guia já tem '{$ag->trilha->nome}' agendada às {$inicioStr} e estará disponível a partir das {$livreStr}. Escolha outro horário ou outro guia.";
+            }
+        }
+
+        return null;
     }
 
     private function authorizeParticipant(Request $request, Agendamento $agendamento): void

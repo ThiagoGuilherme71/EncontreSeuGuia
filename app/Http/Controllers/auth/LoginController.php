@@ -25,7 +25,8 @@ class LoginController extends Controller
 
         // Tenta autenticar como trilheiro
         if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->intended(route('landing-page'));
+            $request->session()->regenerate();
+            return redirect()->route('landing-page');
         }
 
         // Se falhar, tenta autenticar como guia

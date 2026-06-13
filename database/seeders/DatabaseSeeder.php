@@ -2,131 +2,130 @@
 
 namespace Database\Seeders;
 
-use App\Models\Idioma;
-use Illuminate\Database\Seeder;
-use App\Models\Trilha;
 use App\Models\Dificuldade;
 use App\Models\Guia;
+use App\Models\Idioma;
+use App\Models\Trilha;
 use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Dificuldades (alinhadas com o frontend)
-        $dificuldades = ['Fácil', 'Moderado', 'Difícil'];
-        foreach ($dificuldades as $descricao) {
+        // Dificuldades
+        foreach (['Fácil', 'Moderado', 'Difícil'] as $descricao) {
             Dificuldade::firstOrCreate(['descricao' => $descricao]);
         }
 
-        $facil = Dificuldade::where('descricao', 'Fácil')->first()->id;
-        $moderado = Dificuldade::where('descricao', 'Moderado')->first()->id;
         $dificil = Dificuldade::where('descricao', 'Difícil')->first()->id;
 
-        // Trilhas da Chapada Diamantina
-        $trilhas = [
-            [
-                'nome' => 'Cachoeira da Fumaça',
-                'descricao' => "Uma das cachoeiras mais altas do Brasil, com cerca de 340 metros de queda livre. A trilha sobe a serra a partir do Vale do Capão e o visual lá de cima é de tirar o fôlego.\n\nDistância: ~12km (ida e volta)\nTempo médio: 6 horas",
-                'id_dificuldade' => $dificil,
-                'cidade' => 'Vale do Capão',
-            ],
-            [
-                'nome' => 'Morro do Pai Inácio',
-                'descricao' => "O cartão-postal da Chapada Diamantina. Subida curta e tranquila que recompensa com uma vista panorâmica de 360° dos vales e morros da região. Imperdível no pôr do sol.\n\nDistância: ~1km\nTempo médio: 40 minutos",
-                'id_dificuldade' => $facil,
-                'cidade' => 'Palmeiras',
-            ],
-            [
-                'nome' => 'Vale do Pati',
-                'descricao' => "Considerada uma das travessias mais bonitas do Brasil. São dias caminhando entre serras, cachoeiras e casas de nativos que servem comida feita no fogão à lenha.\n\nDistância: ~70km (travessia completa)\nTempo médio: 3 a 5 dias",
-                'id_dificuldade' => $dificil,
-                'cidade' => 'Andaraí',
-            ],
-            [
-                'nome' => 'Poço do Diabo',
-                'descricao' => "Poço de águas escuras no Rio Mucugezinho, cercado por paredões. Ótimo para banho e para quem quer se aventurar na tirolesa e no rapel.\n\nDistância: ~2km\nTempo médio: 1 hora",
-                'id_dificuldade' => $facil,
-                'cidade' => 'Lençóis',
-            ],
-            [
-                'nome' => 'Cachoeira do Buracão',
-                'descricao' => "Um cânion estreito onde a água despenca 85 metros em meio a paredes de pedra. A chegada nadando pelo cânion é uma experiência única.\n\nDistância: ~6km\nTempo médio: 4 horas",
-                'id_dificuldade' => $moderado,
-                'cidade' => 'Ibicoara',
-            ],
-            [
-                'nome' => 'Gruta da Pratinha',
-                'descricao' => "Águas azul-cristalinas onde é possível flutuar e fazer snorkel observando os peixes. Conjunto de grutas com acesso fácil, ideal para famílias.\n\nDistância: acesso direto\nTempo médio: 2 horas",
-                'id_dificuldade' => $facil,
-                'cidade' => 'Iraquara',
-            ],
-        ];
-
-        foreach ($trilhas as $dados) {
-            Trilha::firstOrCreate(['nome' => $dados['nome']], $dados);
-        }
-
         // Idiomas
-        $idiomas = ['Português', 'Inglês', 'Espanhol', 'Francês', 'Alemão', 'Italiano'];
-        foreach ($idiomas as $nome) {
+        foreach (['Português', 'Inglês', 'Espanhol', 'Francês', 'Alemão', 'Italiano'] as $nome) {
             Idioma::firstOrCreate(['nome_idioma' => $nome]);
         }
 
-        // Guias (senha: 123456)
-        $guias = [
-            ['nome' => 'João do Capão',     'email' => 'joao@guia.com',    'anos_experiencia' => 12, 'cidade_base' => 'Vale do Capão'],
-            ['nome' => 'Maria das Trilhas', 'email' => 'maria@guia.com',   'anos_experiencia' => 8,  'cidade_base' => 'Lençóis'],
-            ['nome' => 'Pedro Caminhante',  'email' => 'pedro@guia.com',   'anos_experiencia' => 15, 'cidade_base' => 'Andaraí'],
-            ['nome' => 'Ana da Serra',      'email' => 'ana@guia.com',     'anos_experiencia' => 5,  'cidade_base' => 'Palmeiras'],
-            ['nome' => 'Carlos Trekking',   'email' => 'carlos@guia.com',  'anos_experiencia' => 20, 'cidade_base' => 'Ibicoara'],
-            ['nome' => 'Lúcia Aventura',    'email' => 'lucia@guia.com',   'anos_experiencia' => 3,  'cidade_base' => 'Iraquara'],
-        ];
+        // Trilhas
+        $fumacinha = $this->criarTrilha(
+            nome: 'Cachoeira da Fumacinha',
+            descricao: "Uma das cachoeiras mais altas do Brasil, com cerca de 340 metros de queda livre. A trilha sobe a serra a partir do Vale do Capão e o visual lá de cima é absolutamente de tirar o fôlego — num dia limpo dá para ver a fumaça se formando com o vento que carrega as gotículas d'água pelo abismo.\n\nA subida é exigente, com trechos de rocha escorregadia e inclinação acentuada no final, mas qualquer esforço se paga quando você chega à beira e olha para baixo. Leve bastante água, protetor solar e um calçado com boa aderência.\n\nDistância: ~12 km (ida e volta)\nDesnível: 400 m\nTempo médio: 5 a 7 horas",
+            dificuldadeId: $dificil,
+            cidade: 'Vale do Capão',
+            estado: 'BA',
+            imagemSeeder: 'cachoeira_fumacinha.jpg',
+        );
 
-        foreach ($guias as $i => $dados) {
-            $guia = Guia::firstOrCreate(
-                ['email' => $dados['email']],
-                [
-                    'nome' => $dados['nome'],
-                    'telefone' => '(75) 9' . rand(1000, 9999) . '-' . rand(1000, 9999),
-                    'cep' => '465' . rand(10, 99) . '-000',
-                    'endereco' => $dados['cidade_base'] . ', Chapada Diamantina - BA',
-                    'anos_experiencia' => $dados['anos_experiencia'],
-                    'link_instagram' => '@' . strtolower(explode(' ', $dados['nome'])[0]) . '.guia',
-                    'link_facebook' => null,
-                    'doc_frente' => 'sandbox/doc_frente.jpg',
-                    'doc_verso' => 'sandbox/doc_verso.jpg',
-                    'password' => bcrypt('123456'),
-                    'data_nascimento' => (1975 + $i * 4) . '-0' . ($i + 1) . '-15',
-                    'cpf' => sprintf('%03d.%03d.%03d-%02d', rand(100, 999), rand(100, 999), rand(100, 999), rand(10, 99)),
-                ]
-            );
+        $pati = $this->criarTrilha(
+            nome: 'Vale do Pati',
+            descricao: "Considerada por muitos a travessia de trekking mais bonita do Brasil. São dias caminhando entre serras imponentes, cachoeiras que jorram das paredes de pedra e casas de nativos que recebem viajantes com comida feita no fogão à lenha e histórias passadas de geração em geração.\n\nO Vale do Pati é quase desabitado e sem acesso para carros, o que preserva uma tranquilidade raramente encontrada. A travessia completa passa por mirantes com vistas de 360° da Chapada Diamantina e por poços de águas cristalinas onde é possível nadar no meio da mata.\n\nDistância: ~70 km (travessia completa)\nDesnível acumulado: 3.200 m\nTempo médio: 3 a 5 dias\nÉpoca ideal: abril a setembro",
+            dificuldadeId: $dificil,
+            cidade: 'Andaraí',
+            estado: 'BA',
+            imagemSeeder: 'vale_do_pati.jpg',
+        );
 
-            // Idiomas: todos falam português, alguns falam mais
-            $idiomaIds = [Idioma::where('nome_idioma', 'Português')->first()->id];
-            if ($i % 2 === 0) $idiomaIds[] = Idioma::where('nome_idioma', 'Inglês')->first()->id;
-            if ($i % 3 === 0) $idiomaIds[] = Idioma::where('nome_idioma', 'Espanhol')->first()->id;
-            $guia->idiomas()->sync($idiomaIds);
-        }
-
-        // Vincular guias às trilhas (cada trilha com até 3 guias)
-        $todasTrilhas = Trilha::all();
-        $todosGuias = Guia::all();
-        foreach ($todasTrilhas as $i => $trilha) {
-            $guiasDaTrilha = $todosGuias->slice($i % 4, 3)->pluck('id')->toArray();
-            $trilha->guias()->sync($guiasDaTrilha);
-        }
-
-        // Usuário trilheiro de teste (senha: 123456)
-        User::firstOrCreate(
-            ['email' => 'teste@teste.com'],
+        // Guia
+        $guia = Guia::firstOrCreate(
+            ['email' => 'carlos.nascimento.guia@gmail.com'],
             [
-                'nome' => 'Thiago Trilheiro',
-                'telefone' => '(75) 99999-0000',
-                'data_nascimento' => '1995-06-15',
-                'cpf' => '111.222.333-44',
-                'password' => bcrypt('123456'),
+                'nome'             => 'Carlos Eduardo Nascimento',
+                'telefone'         => '(75) 98234-5671',
+                'data_nascimento'  => '1983-09-14',
+                'cpf'              => '235.489.126-77',
+                'cep'              => '46900-000',
+                'endereco'         => 'Rua da Praça, 45 — Lençóis, BA',
+                'anos_experiencia' => 14,
+                'link_instagram'   => '@carlosguia.chapada',
+                'link_facebook'    => null,
+                'doc_frente'       => null,
+                'doc_verso'        => null,
+                'password'         => bcrypt('123456'),
             ]
         );
+
+        $guia->idiomas()->sync([
+            Idioma::where('nome_idioma', 'Português')->first()->id,
+            Idioma::where('nome_idioma', 'Inglês')->first()->id,
+            Idioma::where('nome_idioma', 'Espanhol')->first()->id,
+        ]);
+
+        // Guia disponível nas duas trilhas
+        $guia->trilhas()->syncWithoutDetaching([
+            $fumacinha->id => ['congelada' => false],
+            $pati->id      => ['congelada' => false],
+        ]);
+
+        // Trilheiro
+        User::firstOrCreate(
+            ['email' => 'thiagoguilherme.barbosaa@gmail.com'],
+            [
+                'nome'            => 'Thiago Guilherme Barbosa',
+                'telefone'        => '(71) 98821-3047',
+                'data_nascimento' => '2001-03-22',
+                'cpf'             => '412.873.095-60',
+                'password'        => bcrypt('123456'),
+            ]
+        );
+    }
+
+    private function criarTrilha(
+        string $nome,
+        string $descricao,
+        int    $dificuldadeId,
+        string $cidade,
+        string $estado,
+        string $imagemSeeder,
+    ): Trilha {
+        $fotoPath = $this->copiarFotoSeeder($imagemSeeder);
+
+        return Trilha::firstOrCreate(
+            ['nome' => $nome],
+            [
+                'descricao'       => $descricao,
+                'id_dificuldade'  => $dificuldadeId,
+                'cidade'          => $cidade,
+                'estado'          => $estado,
+                'foto'            => $fotoPath,
+                'criado_por_guia' => null,
+            ]
+        );
+    }
+
+    private function copiarFotoSeeder(string $nomeArquivo): ?string
+    {
+        $origem = base_path("storage/app/seeders/{$nomeArquivo}");
+
+        if (!file_exists($origem)) {
+            return null;
+        }
+
+        $uuid    = Str::uuid()->toString();
+        $destino = "trilhas/{$uuid}.jpg";
+
+        Storage::disk('public')->put($destino, file_get_contents($origem));
+
+        return "storage/{$destino}";
     }
 }

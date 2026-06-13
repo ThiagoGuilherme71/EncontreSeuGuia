@@ -64,7 +64,7 @@ class Guia extends Authenticatable
     public function trilhas()
     {
         return $this->belongsToMany(Trilha::class, 'trilhas_guias', 'guia_id', 'trilha_id')
-            ->withPivot('congelada');
+            ->withPivot('congelada', 'preco_por_pessoa');
     }
 
 }

@@ -31,11 +31,13 @@ class TrilhaController extends Controller
 
         $guias = $trilha->guiasAtivos()
             ->select('guias.id', 'guias.nome', 'guias.anos_experiencia', 'guias.link_instagram')
+            ->withPivot('preco_por_pessoa')
             ->with('idiomas:id,nome_idioma')
             ->get()
             ->map(function ($guia) {
                 $guia->media_avaliacoes = Avaliacao::where('id_guia', $guia->id)->avg('nota');
                 $guia->total_avaliacoes = Avaliacao::where('id_guia', $guia->id)->count();
+                $guia->preco_por_pessoa = $guia->pivot->preco_por_pessoa;
                 return $guia;
             });
 
@@ -76,31 +78,74 @@ class TrilhaController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        $guia = $request->user('guia');
+        $inscritas = $guia->trilhas()->pluck('trilhas.id');
+
+        $disponiveis = Trilha::with('dificuldade')
+            ->whereNotIn('id', $inscritas)
+            ->orderBy('cidade')
+            ->orderBy('nome')
+            ->get(['id', 'nome', 'estado', 'cidade', 'id_dificuldade', 'foto']);
+
         return Inertia::render('Trilha/Create', [
             'dificuldades' => Dificuldade::all(),
+            'trilhas_disponiveis' => $disponiveis,
         ]);
+    }
+
+    public function inscrever(Request $request, $id)
+    {
+        $guia = $request->user('guia');
+        $trilha = Trilha::findOrFail($id);
+
+        if ($guia->trilhas()->where('trilha_id', $id)->exists()) {
+            return back()->withErrors(['trilha' => 'Você já está inscrito nesta trilha.']);
+        }
+
+        $guia->trilhas()->syncWithoutDetaching([$trilha->id]);
+
+        return redirect()->route('guia-dash')
+            ->with('success', "Você agora é guia de \"{$trilha->nome}\"!");
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'nome' => 'required|string|max:255|unique:trilhas,nome',
-            'descricao' => 'required|string|max:5000',
-            'id_dificuldade' => 'required|exists:dificuldades,id',
-            'cidade' => 'required|string|max:255',
-            'foto' => 'nullable|image|max:4096',
+            'nome'                      => 'required|string|max:255|unique:trilhas,nome',
+            'descricao'                 => 'required|string|max:5000',
+            'id_dificuldade'            => 'required|exists:dificuldades,id',
+            'estado'                    => 'required|string|size:2',
+            'cidade'                    => 'required|string|max:255',
+            'foto'                      => 'required|image|max:4096',
+            'distancia_km'              => 'nullable|numeric|min:0|max:9999',
+            'tempo_estimado_horas'      => 'nullable|numeric|min:0|max:999',
+            'ponto_encontro_lat'        => 'nullable|numeric|between:-90,90',
+            'ponto_encontro_lng'        => 'nullable|numeric|between:-180,180',
+            'ponto_encontro_descricao'  => 'nullable|string|max:500',
+            'o_que_levar'               => 'nullable|array',
+            'o_que_levar.*'             => 'string|max:100',
+        ], [
+            'foto.uploaded' => 'A foto é muito grande. O servidor aceita no máximo 4MB.',
+            'foto.max'      => 'A foto deve ter no máximo 4MB.',
         ]);
 
         $guia = $request->user('guia');
 
         $trilha = Trilha::create([
-            'nome' => $request->nome,
-            'descricao' => $request->descricao,
-            'id_dificuldade' => $request->id_dificuldade,
-            'cidade' => $request->cidade,
-            'criado_por_guia' => $guia->id,
+            'nome'                     => $request->nome,
+            'descricao'                => $request->descricao,
+            'id_dificuldade'           => $request->id_dificuldade,
+            'estado'                   => $request->estado,
+            'cidade'                   => $request->cidade,
+            'criado_por_guia'          => $guia->id,
+            'distancia_km'             => $request->distancia_km,
+            'tempo_estimado_horas'     => $request->tempo_estimado_horas,
+            'ponto_encontro_lat'       => $request->ponto_encontro_lat,
+            'ponto_encontro_lng'       => $request->ponto_encontro_lng,
+            'ponto_encontro_descricao' => $request->ponto_encontro_descricao,
+            'o_que_levar'              => $request->o_que_levar ?? [],
         ]);
 
         if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
@@ -133,14 +178,30 @@ class TrilhaController extends Controller
         $trilha = $guia->trilhas()->findOrFail($id);
 
         $request->validate([
-            'nome' => 'required|string|max:255|unique:trilhas,nome,' . $trilha->id,
-            'descricao' => 'required|string|max:5000',
-            'id_dificuldade' => 'required|exists:dificuldades,id',
-            'cidade' => 'required|string|max:255',
-            'foto' => 'nullable|image|max:4096',
+            'nome'                     => 'required|string|max:255|unique:trilhas,nome,' . $trilha->id,
+            'descricao'                => 'required|string|max:5000',
+            'id_dificuldade'           => 'required|exists:dificuldades,id',
+            'estado'                   => 'required|string|size:2',
+            'cidade'                   => 'required|string|max:255',
+            'foto'                     => 'nullable|image|max:4096',
+            'distancia_km'             => 'nullable|numeric|min:0|max:9999',
+            'tempo_estimado_horas'     => 'nullable|numeric|min:0|max:999',
+            'ponto_encontro_lat'       => 'nullable|numeric|between:-90,90',
+            'ponto_encontro_lng'       => 'nullable|numeric|between:-180,180',
+            'ponto_encontro_descricao' => 'nullable|string|max:500',
+            'o_que_levar'              => 'nullable|array',
+            'o_que_levar.*'            => 'string|max:100',
+        ], [
+            'foto.uploaded' => 'A foto é muito grande. O servidor aceita no máximo 4MB.',
+            'foto.max'      => 'A foto deve ter no máximo 4MB.',
         ]);
 
-        $trilha->update($request->only('nome', 'descricao', 'id_dificuldade', 'cidade'));
+        $trilha->update($request->only(
+            'nome', 'descricao', 'id_dificuldade', 'estado', 'cidade',
+            'distancia_km', 'tempo_estimado_horas',
+            'ponto_encontro_lat', 'ponto_encontro_lng', 'ponto_encontro_descricao',
+        ));
+        $trilha->update(['o_que_levar' => $request->o_que_levar ?? []]);
 
         if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
             $trilha->update(['foto' => \App\Support\ImageResizer::save($request->file('foto'), 'trilhas', 1600)['path']]);
@@ -151,6 +212,22 @@ class TrilhaController extends Controller
             : 'Solicitação de edição aprovada automaticamente! (sandbox)';
 
         return redirect()->route('guia-dash')->with('success', $msg);
+    }
+
+    public function atualizarInscricao(Request $request, $id)
+    {
+        $guia = $request->user('guia');
+        $guia->trilhas()->findOrFail($id);
+
+        $request->validate([
+            'preco_por_pessoa' => 'nullable|numeric|min:0|max:99999',
+        ]);
+
+        $guia->trilhas()->updateExistingPivot($id, [
+            'preco_por_pessoa' => $request->preco_por_pessoa,
+        ]);
+
+        return back()->with('success', 'Inscrição atualizada!');
     }
 
     public function congelar(Request $request, $id)

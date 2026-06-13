@@ -8,7 +8,7 @@ export default function BottomNav() {
     const current = typeof window !== 'undefined' ? window.location.pathname : '';
 
     const userNav = [
-        { href: '/landing-page', icon: Home,        label: 'Início' },
+        { href: '/', icon: Home,        label: 'Início' },
         { href: '/buscar-trilha', icon: Search,      label: 'Buscar' },
         { href: '/conta',         icon: CalendarDays, label: 'Reservas' },
         { href: '/conta',         icon: User,         label: 'Perfil' },

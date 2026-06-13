@@ -1,11 +1,12 @@
-import { Award, Languages } from 'lucide-react';
+import { Award, Languages, CircleDollarSign } from 'lucide-react';
 import Avatar from '@/Components/ui/Avatar';
 import Button from '@/Components/ui/Button';
 import { StarDisplay } from '@/Components/ui/StarRating';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 
 export default function GuiaCard({ guia, onAgendar, className }) {
     const media = guia.media_avaliacoes ? Math.round(guia.media_avaliacoes) : 0;
+    const temPreco = guia.preco_por_pessoa != null;
 
     return (
         <div className={cn(
@@ -17,7 +18,15 @@ export default function GuiaCard({ guia, onAgendar, className }) {
                 <Avatar name={guia.nome} size="lg" />
 
                 <div className="flex-1 min-w-0">
-                    <h4 className="font-display font-bold text-[#1C1917] line-clamp-1">{guia.nome}</h4>
+                    <div className="flex items-start justify-between gap-2">
+                        <h4 className="font-display font-bold text-[#1C1917] line-clamp-1">{guia.nome}</h4>
+                        {temPreco && (
+                            <span className="shrink-0 flex items-center gap-1 text-sm font-bold text-[#2D6A4F] bg-[#D8EFE3] border border-[#2D6A4F] px-2 py-0.5 rounded-lg">
+                                <CircleDollarSign size={13} />
+                                {formatCurrency(guia.preco_por_pessoa)}<span className="font-normal text-xs">/pessoa</span>
+                            </span>
+                        )}
+                    </div>
 
                     {guia.total_avaliacoes > 0 ? (
                         <div className="flex items-center gap-1.5 mt-0.5">
@@ -52,6 +61,7 @@ export default function GuiaCard({ guia, onAgendar, className }) {
                     size="sm"
                 >
                     Agendar com {guia.nome?.split(' ')[0]}
+                    {temPreco && <span className="opacity-75 font-normal">· {formatCurrency(guia.preco_por_pessoa)}/pessoa</span>}
                 </Button>
             )}
         </div>

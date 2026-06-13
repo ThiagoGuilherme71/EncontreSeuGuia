@@ -9,45 +9,42 @@ class Trilha extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<string>
-     */
     protected $fillable = [
         'nome',
         'descricao',
         'id_dificuldade',
+        'estado',
         'cidade',
         'foto',
         'criado_por_guia',
+        'distancia_km',
+        'tempo_estimado_horas',
+        'ponto_encontro_lat',
+        'ponto_encontro_lng',
+        'ponto_encontro_descricao',
+        'o_que_levar',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'id_dificuldade' => 'integer',
+        'id_dificuldade'       => 'integer',
+        'distancia_km'         => 'float',
+        'tempo_estimado_horas' => 'float',
+        'ponto_encontro_lat'   => 'float',
+        'ponto_encontro_lng'   => 'float',
+        'o_que_levar'          => 'array',
     ];
 
-    /**
-     * Relationships
-     */
-
-    // Relacionamento com dificuldades (assume que há um modelo `Dificuldade`)
     public function dificuldade()
     {
         return $this->belongsTo(Dificuldade::class, 'id_dificuldade');
     }
+
     public function guias()
     {
         return $this->belongsToMany(Guia::class, 'trilhas_guias', 'trilha_id', 'guia_id')
-            ->withPivot('congelada');
+            ->withPivot('congelada', 'preco_por_pessoa');
     }
 
-    // Só guias com inscrição ativa (aparecem como disponíveis)
     public function guiasAtivos()
     {
         return $this->guias()->wherePivot('congelada', false);

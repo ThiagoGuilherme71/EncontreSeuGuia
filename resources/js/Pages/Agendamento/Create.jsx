@@ -1,12 +1,39 @@
 import { Head, Link, useForm } from '@inertiajs/react';
+import { useMemo } from 'react';
 import AppLayout from '@/Layouts/AppLayout';
 import Button from '@/Components/ui/Button';
 import { Input, Textarea } from '@/Components/ui/Input';
 import Avatar from '@/Components/ui/Avatar';
-import { ChevronLeft, Minus, Plus, MapPin, Award, Info } from 'lucide-react';
+import { ChevronLeft, Minus, Plus, MapPin, Award, Info, AlertTriangle } from 'lucide-react';
 import { cn, formatCurrency, getDifficultyColor } from '@/lib/utils';
 
-export default function Create({ trilha, guia, preco_por_pessoa, errors = {} }) {
+function detectarConflito(agendamentos, data, horario, duracaoTrilha) {
+    if (!data || !horario) return null;
+    const doDia = agendamentos.filter((a) => a.data === data);
+    if (!doDia.length) return null;
+
+    const [novaH, novaM] = horario.split(':').map(Number);
+    const novoInicio = novaH * 60 + novaM;
+    const novoDur    = Math.round((duracaoTrilha ?? 2) * 60);
+    const novoFim    = novoInicio + novoDur;
+
+    for (const ag of doDia) {
+        const [h, m] = ag.horario.split(':').map(Number);
+        const inicio = h * 60 + m;
+        const dur    = Math.round((ag.duracao_horas ?? 2) * 60);
+        const fim    = inicio + dur;
+
+        if (novoInicio < fim && novoFim > inicio) {
+            const livreH   = Math.floor(fim / 60);
+            const livreM   = fim % 60;
+            const livreStr = `${String(livreH).padStart(2, '0')}:${String(livreM).padStart(2, '0')}`;
+            return { trilha: ag.trilha_nome, inicioOcupado: ag.horario, livreApartir: livreStr };
+        }
+    }
+    return null;
+}
+
+export default function Create({ trilha, guia, preco_por_pessoa, agendamentos_guia = [], errors = {} }) {
     const { data, setData, post, processing } = useForm({
         id_trilha: trilha.id,
         id_guia: guia.id,
@@ -15,6 +42,11 @@ export default function Create({ trilha, guia, preco_por_pessoa, errors = {} }) 
         num_pessoas: 1,
         observacoes: '',
     });
+
+    const conflito = useMemo(
+        () => detectarConflito(agendamentos_guia, data.data, data.horario, trilha.tempo_estimado_horas),
+        [data.data, data.horario],
+    );
 
     const total = data.num_pessoas * preco_por_pessoa;
 
@@ -76,6 +108,20 @@ export default function Create({ trilha, guia, preco_por_pessoa, errors = {} }) 
                         </div>
                     </div>
                 </div>
+
+                {conflito && (
+                    <div className="rounded-2xl border-2 border-[#E07A45] bg-[#FFF5EE] p-4 flex items-start gap-3 mb-2">
+                        <AlertTriangle size={18} className="text-[#E07A45] shrink-0 mt-0.5" />
+                        <div>
+                            <p className="text-sm font-bold text-[#E07A45]">Horário indisponível</p>
+                            <p className="text-xs text-[#78716C] mt-0.5">
+                                Este guia já tem <strong>{conflito.trilha}</strong> agendada às{' '}
+                                <strong>{conflito.inicioOcupado}</strong> e estará disponível a partir das{' '}
+                                <strong>{conflito.livreApartir}</strong>. Escolha outro horário ou outro guia.
+                            </p>
+                        </div>
+                    </div>
+                )}
 
                 <form onSubmit={submit} className="flex flex-col gap-5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -152,7 +198,13 @@ export default function Create({ trilha, guia, preco_por_pessoa, errors = {} }) 
                         </p>
                     </div>
 
-                    <Button type="submit" loading={processing} size="lg" className="w-full">
+                    <Button
+                        type="submit"
+                        loading={processing}
+                        disabled={!!conflito}
+                        size="lg"
+                        className="w-full"
+                    >
                         Enviar proposta 🥾
                     </Button>
                 </form>

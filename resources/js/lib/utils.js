@@ -7,7 +7,11 @@ export function cn(...inputs) {
 
 export function formatDate(date, options = {}) {
     if (!date) return '';
-    const d = typeof date === 'string' ? new Date(date + 'T00:00:00') : new Date(date);
+    // Extrai só "YYYY-MM-DD" e parseia como horário local para evitar
+    // que a conversão UTC→local mude o dia (ex: T00:00:00Z vira dia anterior no Brasil)
+    const str = typeof date === 'string' ? date : date.toISOString();
+    const d = new Date(str.substring(0, 10) + 'T00:00:00');
+    if (isNaN(d.getTime())) return '';
     return d.toLocaleDateString('pt-BR', {
         day: '2-digit',
         month: '2-digit',
@@ -32,12 +36,12 @@ export function formatTime(time) {
 
 export function getDifficultyColor(descricao) {
     const map = {
-        'Fácil': 'bg-verde-pale text-verde',
-        'Moderado': 'bg-yellow-100 text-yellow-800',
-        'Difícil': 'bg-red-100 text-red-700',
-        'Muito Difícil': 'bg-red-200 text-red-900',
+        'Fácil':       'bg-[#D8EFE3] text-[#2D6A4F] border-[#2D6A4F]',
+        'Moderado':    'bg-[#FEF3C7] text-[#92400E] border-[#92400E]',
+        'Difícil':     'bg-[#FEE2E2] text-red-700   border-red-700',
+        'Muito Difícil': 'bg-[#FCA5A5] text-red-900 border-red-900',
     };
-    return map[descricao] ?? 'bg-gray-100 text-gray-600';
+    return map[descricao] ?? 'bg-[#F5EDD9] text-[#78716C] border-[#78716C]';
 }
 
 export function getStatusLabel(status) {

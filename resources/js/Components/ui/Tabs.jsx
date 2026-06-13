@@ -18,7 +18,7 @@ export function Tabs({ defaultValue, value, onChange, children, className }) {
 export function TabList({ children, className, variant = 'line' }) {
     const styles = {
         line: 'flex gap-1 border-b-2 border-[#1C1917] overflow-x-auto scrollbar-hide',
-        pills: 'flex gap-2 bg-[#F5EDD9] p-1 rounded-xl overflow-x-auto scrollbar-hide',
+        pills: 'flex flex-wrap gap-2 bg-[#F5EDD9] p-1 rounded-xl',
     };
     return (
         <div className={cn(styles[variant], className)}>

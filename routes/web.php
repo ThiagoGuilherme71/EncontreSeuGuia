@@ -10,7 +10,7 @@ use \App\Http\Controllers\ClienteController;
 
 
 //Login
-Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 //SignUp for
@@ -21,8 +21,7 @@ Route::post('/signup-guia-submit', [SignupController::class, 'signupGuia'])->nam
 //guia
 Route::get('/guia-dash', [GuiaController::class, 'index'])->middleware('auth:guia')->name('guia-dash');
 
-//Lading page
-Route::get('/landing-page', [ClienteController::class, 'landingPage'])->name('landing-page');
+Route::get('/', [ClienteController::class, 'landingPage'])->name('landing-page');
 
 //trilha — público
 Route::get('/buscar-trilha', [TrilhaController::class, 'buscar'])->name('trilhas.buscar');
@@ -33,10 +32,12 @@ Route::get('/get-trilhas/{id}', [TrilhaController::class, 'getTrilha'])->name('t
 Route::middleware('auth:guia')->group(function () {
     Route::get('/trilhas/criar', [TrilhaController::class, 'create'])->name('trilhas.create');
     Route::post('/trilhas', [TrilhaController::class, 'store'])->name('trilhas.store');
+    Route::post('/trilhas/{id}/inscrever', [TrilhaController::class, 'inscrever'])->whereNumber('id')->name('trilhas.inscrever');
     Route::get('/trilhas/{id}/editar', [TrilhaController::class, 'edit'])->whereNumber('id')->name('trilhas.edit');
     Route::post('/trilhas/{id}', [TrilhaController::class, 'update'])->whereNumber('id')->name('trilhas.update');
     Route::patch('/trilhas/{id}/congelar', [TrilhaController::class, 'congelar'])->whereNumber('id')->name('trilhas.congelar');
     Route::patch('/trilhas/{id}/reativar', [TrilhaController::class, 'reativar'])->whereNumber('id')->name('trilhas.reativar');
+    Route::patch('/trilhas/{id}/inscricao', [TrilhaController::class, 'atualizarInscricao'])->whereNumber('id')->name('trilhas.inscricao');
 });
 
 Route::get('/trilhas/{id}', [TrilhaController::class, 'exibir'])->whereNumber('id')->name('trilhas.exibir');

@@ -96,7 +96,7 @@ export default function Signup({ errors = {} }) {
 
                 <p className="text-center text-sm text-[#78716C]">
                     Já tem conta?{' '}
-                    <Link href="/" className="text-[#2D6A4F] font-semibold hover:underline">
+                    <Link href="/login" className="text-[#2D6A4F] font-semibold hover:underline">
                         Entrar
                     </Link>
                 </p>

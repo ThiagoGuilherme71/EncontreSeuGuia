@@ -23,10 +23,12 @@
         "alpinejs": "^3.14.9",
         "autoprefixer": "^10.4.21",
         "clsx": "^2.1.1",
+        "leaflet": "^1.9.4",
         "lucide-react": "^1.17.0",
         "postcss": "^8.5.3",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
+        "react-leaflet": "^5.0.0",
         "sweetalert2": "^11.17.2",
         "tailwind-merge": "^3.6.0"
     }

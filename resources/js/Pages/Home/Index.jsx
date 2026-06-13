@@ -4,7 +4,7 @@ import AppLayout from '@/Layouts/AppLayout';
 import TrilhaCard from '@/Components/domain/TrilhaCard';
 import EmptyState from '@/Components/ui/EmptyState';
 import Button from '@/Components/ui/Button';
-import { Search, MapPin, Compass, X, ChevronDown } from 'lucide-react';
+import { Search, MapPin, Compass, X, ChevronDown, Mountain } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 function Hero({ busca, onSearch }) {
@@ -34,7 +34,7 @@ function Hero({ busca, onSearch }) {
             <div className="relative max-w-7xl mx-auto px-4 py-12 md:py-20 text-center">
                 <h1 className="font-display font-extrabold text-3xl md:text-5xl text-white leading-tight">
                     Encontre sua próxima<br />
-                    <span className="text-[#F2C94C]">aventura</span> 🥾
+                    <span className="text-[#F2C94C]">aventura</span> <Mountain className="inline-block text-[#F2C94C] mb-1" size={32} strokeWidth={1.5} />
                 </h1>
                 <p className="text-white/80 mt-3 md:mt-4 max-w-md mx-auto text-sm md:text-base">
                     Conectamos você aos melhores guias locais para explorar trilhas com segurança.
@@ -114,7 +114,7 @@ export default function Index({ trilhas = [], paginacao = {}, cidades = [], filt
     }, [trilhas, paginacao.pagina_atual]);
 
     function applyFilters(next) {
-        router.get('/landing-page', {
+        router.get('/', {
             cidade: next.cidade ?? undefined,
             busca: next.busca || undefined,
         }, { preserveState: true, preserveScroll: true });
@@ -122,7 +122,7 @@ export default function Index({ trilhas = [], paginacao = {}, cidades = [], filt
 
     function carregarMais() {
         setCarregando(true);
-        router.get('/landing-page', {
+        router.get('/', {
             cidade: filtros.cidade ?? undefined,
             busca: filtros.busca || undefined,
             page: (paginacao.pagina_atual ?? 1) + 1,

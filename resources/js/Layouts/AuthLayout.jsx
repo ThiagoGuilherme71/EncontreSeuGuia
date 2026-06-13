@@ -1,5 +1,4 @@
 import { Link } from '@inertiajs/react';
-import { Mountain } from 'lucide-react';
 
 export default function AuthLayout({ children, title, subtitle }) {
     return (
@@ -24,8 +23,9 @@ export default function AuthLayout({ children, title, subtitle }) {
                 <div className="absolute top-1/2 right-8 w-8 h-8 bg-[#F2C94C] border-2 border-[#1C1917] rounded-lg rotate-45" />
 
                 <div className="relative text-white text-center max-w-sm">
-                    <div className="w-16 h-16 rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center mx-auto mb-6">
-                        <Mountain size={32} strokeWidth={2} />
+                    {/* Container creme para a logo não se perder no fundo verde */}
+                    <div className="w-28 h-28 rounded-3xl bg-[#ECE1CB] border-2 border-white/30 shadow-[4px_4px_0px_rgba(0,0,0,0.2)] flex items-center justify-center mx-auto mb-6 p-3">
+                        <img src="/images/logo-montanha.svg" alt="Trilhas" className="w-full h-full" />
                     </div>
                     <h1 className="font-display font-bold text-4xl mb-4">Trilhas</h1>
                     <p className="text-lg opacity-80 leading-relaxed">
@@ -43,9 +43,9 @@ export default function AuthLayout({ children, title, subtitle }) {
             <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
                 <div className="w-full max-w-md">
                     {/* Logo mobile */}
-                    <div className="flex items-center justify-center gap-2 mb-8 lg:hidden">
-                        <div className="w-10 h-10 rounded-xl bg-[#2D6A4F] border-2 border-[#E3CDA8] flex items-center justify-center">
-                            <Mountain size={20} className="text-white" />
+                    <div className="flex items-center justify-center gap-3 mb-8 lg:hidden">
+                        <div className="w-14 h-14 rounded-2xl bg-[#ECE1CB] border-2 border-white/20 shadow-[3px_3px_0px_rgba(0,0,0,0.25)] flex items-center justify-center p-2 shrink-0">
+                            <img src="/images/logo-montanha.svg" alt="Trilhas" className="w-full h-full" />
                         </div>
                         <span className="font-display font-bold text-xl text-white">Trilhas</span>
                     </div>

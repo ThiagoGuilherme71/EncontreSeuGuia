@@ -225,6 +225,33 @@ export default function SignupGuia({ idiomas = [], trilhas = [], errors = {} }) 
                             </div>
                         )}
 
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-sm font-semibold text-[#1C1917]">
+                                    Documento (frente)
+                                    <span className="text-[#78716C] font-normal"> — opcional</span>
+                                </label>
+                                <input
+                                    type="file"
+                                    accept="image/*,.pdf"
+                                    onChange={(e) => setData('doc_frente', e.target.files[0])}
+                                    className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-2 file:border-[#1C1917] file:bg-[#F5EDD9] file:text-[#1C1917] file:font-semibold file:cursor-pointer hover:file:bg-[#E3CDA8] cursor-pointer"
+                                />
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-sm font-semibold text-[#1C1917]">
+                                    Documento (verso)
+                                    <span className="text-[#78716C] font-normal"> — opcional</span>
+                                </label>
+                                <input
+                                    type="file"
+                                    accept="image/*,.pdf"
+                                    onChange={(e) => setData('doc_verso', e.target.files[0])}
+                                    className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-2 file:border-[#1C1917] file:bg-[#F5EDD9] file:text-[#1C1917] file:font-semibold file:cursor-pointer hover:file:bg-[#E3CDA8] cursor-pointer"
+                                />
+                            </div>
+                        </div>
+
                         <div className="flex gap-3 mt-2">
                             <Button
                                 type="button"
@@ -243,7 +270,7 @@ export default function SignupGuia({ idiomas = [], trilhas = [], errors = {} }) 
 
                 <p className="text-center text-sm text-[#78716C]">
                     Já tem conta?{' '}
-                    <Link href="/" className="text-[#2D6A4F] font-semibold hover:underline">
+                    <Link href="/login" className="text-[#2D6A4F] font-semibold hover:underline">
                         Entrar
                     </Link>
                 </p>

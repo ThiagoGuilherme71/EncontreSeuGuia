@@ -76,9 +76,8 @@ DB_PASSWORD=secret
 
 | Papel | E-mail | Senha |
 |---|---|---|
-| Trilheiro | `teste@teste.com` | `123456` |
-| Guia | `joao@guia.com` | `123456` |
-| Guia | `maria@guia.com` | `123456` |
+| Trilheiro | `thiagoguilherme.barbosaa@gmail.com` | `123456` |
+| Guia | `carlos.nascimento.guia@gmail.com` | `123456` |
 
 O seed cria 6 trilhas reais da Chapada Diamantina (BA), 6 guias com idiomas e os vínculos guia↔trilha.
 

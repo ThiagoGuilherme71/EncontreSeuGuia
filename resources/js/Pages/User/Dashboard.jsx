@@ -63,7 +63,7 @@ export default function Dashboard({ perfil, agendamentos = [] }) {
                                 title="Nenhuma reserva ativa"
                                 description="Que tal explorar as trilhas disponíveis e agendar sua próxima aventura?"
                                 action={
-                                    <Link href="/landing-page">
+                                    <Link href="/">
                                         <Button size="sm">
                                             <Compass size={15} /> Explorar trilhas
                                         </Button>

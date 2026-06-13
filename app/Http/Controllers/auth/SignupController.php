@@ -66,6 +66,8 @@ class SignupController extends Controller
             'data_nascimento' => 'required|date',
             'cpf' => 'required|string|unique:guias,cpf',
             'password' => 'required|string|min:6|confirmed',
+            'doc_frente' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'doc_verso' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ]);
 
         $guia = Guia::create([
@@ -75,12 +77,12 @@ class SignupController extends Controller
             'data_nascimento' => $request->data_nascimento,
             'cpf' => $request->cpf,
             'cep' => $request->cep,
-            'anos_experiencia' => $request->experiencia,
+            'anos_experiencia' => $request->experiencia ?: null,
             'endereco' => $request->endereco,
             'link_instagram' => $request->link_instagram,
             'link_facebook' => $request->link_facebook,
-            'doc_frente' => $request->doc_frente,
-            'doc_verso' => $request->doc_verso,
+            'doc_frente' => $request->hasFile('doc_frente') ? $request->file('doc_frente')->store('docs/guias', 'public') : null,
+            'doc_verso' => $request->hasFile('doc_verso') ? $request->file('doc_verso')->store('docs/guias', 'public') : null,
             'password' => Hash::make($request->password),
         ]);
         if ($request->idiomas) {
