@@ -2,29 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agendamento;
 use App\Models\Avaliacao;
 use App\Models\Dificuldade;
 use App\Models\Trilha;
+use App\Support\ImageResizer;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TrilhaController extends Controller
 {
+    /**
+     * Redireciona a busca por nome para a página inicial.
+     */
     public function buscar(Request $request)
     {
         return redirect()->route('landing-page', ['busca' => $request->input('nome')]);
     }
 
+    /**
+     * Retorna todas as trilhas (endpoint utilitário).
+     */
     public function getAllTrilhas()
     {
         return Trilha::all();
     }
 
+    /**
+     * Retorna uma trilha pelo id (endpoint utilitário).
+     */
     public function getTrilha($id)
     {
         return Trilha::where('id', $id)->first();
     }
 
+    /**
+     * Página pública da trilha: guias ativos, avaliações e aventuras.
+     */
     public function exibir($id)
     {
         $trilha = Trilha::with('dificuldade')->findOrFail($id);
@@ -41,15 +55,13 @@ class TrilhaController extends Controller
                 return $guia;
             });
 
-        // avaliações públicas de trilhas concluídas nessa trilha
         $avaliacoes = Avaliacao::with(['user:id,nome,foto', 'guia:id,nome,foto'])
-            ->whereIn('id_agendamento', \App\Models\Agendamento::where('id_trilha', $trilha->id)->pluck('id'))
+            ->whereIn('id_agendamento', Agendamento::where('id_trilha', $trilha->id)->pluck('id'))
             ->latest()
             ->limit(6)
             ->get();
 
-        // aventuras: trilhas concluídas com fotos postadas pelos participantes
-        $aventuras = \App\Models\Agendamento::with(['user:id,nome,foto', 'guia:id,nome,foto', 'fotos'])
+        $aventuras = Agendamento::with(['user:id,nome,foto', 'guia:id,nome,foto', 'fotos'])
             ->where('id_trilha', $trilha->id)
             ->where('status', 'completed')
             ->whereHas('fotos')
@@ -78,6 +90,10 @@ class TrilhaController extends Controller
         ]);
     }
 
+    /**
+     * Formulário de criação com a lista de trilhas em que o guia ainda
+     * não está inscrito.
+     */
     public function create(Request $request)
     {
         $guia = $request->user('guia');
@@ -95,6 +111,9 @@ class TrilhaController extends Controller
         ]);
     }
 
+    /**
+     * Inscreve o guia autenticado como guia de uma trilha existente.
+     */
     public function inscrever(Request $request, $id)
     {
         $guia = $request->user('guia');
@@ -110,6 +129,9 @@ class TrilhaController extends Controller
             ->with('success', "Você agora é guia de \"{$trilha->nome}\"!");
     }
 
+    /**
+     * Cria uma trilha; o guia criador já entra inscrito nela.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -149,20 +171,22 @@ class TrilhaController extends Controller
         ]);
 
         if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
-            $trilha->update(['foto' => \App\Support\ImageResizer::save($request->file('foto'), 'trilhas', 1600)['path']]);
+            $trilha->update(['foto' => ImageResizer::save($request->file('foto'), 'trilhas', 1600)['path']]);
         }
 
-        // o criador já entra inscrito na trilha
         $guia->trilhas()->syncWithoutDetaching([$trilha->id]);
 
         return redirect()->route('guia-dash')
             ->with('success', 'Trilha criada e aprovada automaticamente! (sandbox)');
     }
 
+    /**
+     * Formulário de edição. No sandbox, qualquer guia inscrito na trilha
+     * pode editá-la (não apenas o criador).
+     */
     public function edit(Request $request, $id)
     {
         $guia = $request->user('guia');
-        // qualquer guia inscrito pode editar (aprovação automática no sandbox)
         $trilha = $guia->trilhas()->with('dificuldade')->findOrFail($id);
 
         return Inertia::render('Trilha/Edit', [
@@ -172,6 +196,9 @@ class TrilhaController extends Controller
         ]);
     }
 
+    /**
+     * Atualiza os dados da trilha de um guia inscrito.
+     */
     public function update(Request $request, $id)
     {
         $guia = $request->user('guia');
@@ -204,7 +231,7 @@ class TrilhaController extends Controller
         $trilha->update(['o_que_levar' => $request->o_que_levar ?? []]);
 
         if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
-            $trilha->update(['foto' => \App\Support\ImageResizer::save($request->file('foto'), 'trilhas', 1600)['path']]);
+            $trilha->update(['foto' => ImageResizer::save($request->file('foto'), 'trilhas', 1600)['path']]);
         }
 
         $msg = $trilha->criado_por_guia === $guia->id
@@ -214,6 +241,9 @@ class TrilhaController extends Controller
         return redirect()->route('guia-dash')->with('success', $msg);
     }
 
+    /**
+     * Atualiza o preço por pessoa da inscrição do guia na trilha.
+     */
     public function atualizarInscricao(Request $request, $id)
     {
         $guia = $request->user('guia');
@@ -230,6 +260,9 @@ class TrilhaController extends Controller
         return back()->with('success', 'Inscrição atualizada!');
     }
 
+    /**
+     * Congela a inscrição: o guia deixa de aparecer como disponível.
+     */
     public function congelar(Request $request, $id)
     {
         $guia = $request->user('guia');
@@ -239,6 +272,9 @@ class TrilhaController extends Controller
         return back()->with('success', 'Inscrição congelada. Você não aparece mais como guia disponível nessa trilha.');
     }
 
+    /**
+     * Reativa uma inscrição congelada.
+     */
     public function reativar(Request $request, $id)
     {
         $guia = $request->user('guia');

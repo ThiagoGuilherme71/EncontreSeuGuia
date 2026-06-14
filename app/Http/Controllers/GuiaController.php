@@ -10,11 +10,16 @@ use Inertia\Inertia;
 
 class GuiaController extends Controller
 {
+    /**
+     * Painel do guia: trilhas, propostas pendentes/aceitas e histórico.
+     *
+     * No modo sandbox, agendamentos aceitos com data já passada são
+     * marcados como concluídos automaticamente ao abrir o painel.
+     */
     public function index(Request $request)
     {
         $guia = $request->user('guia');
 
-        // Sandbox: trilhas com data passada e aceitas viram "concluídas" automaticamente
         Agendamento::where('status', 'accepted')
             ->whereDate('data', '<', today())
             ->update(['status' => 'completed']);
@@ -52,11 +57,17 @@ class GuiaController extends Controller
         ]);
     }
 
+    /**
+     * Retorna todos os guias (endpoint utilitário).
+     */
     public function getAllGuias()
     {
         return Guia::all();
     }
 
+    /**
+     * Página de conta do guia com a média e o total de avaliações.
+     */
     public function exibirConta(Request $request)
     {
         $guia = $request->user('guia');

@@ -14,6 +14,9 @@ class ChatMessage extends Model
         'read_at' => 'datetime',
     ];
 
+    /**
+     * Agendamento ao qual a mensagem pertence.
+     */
     public function agendamento()
     {
         return $this->belongsTo(Agendamento::class);

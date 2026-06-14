@@ -18,11 +18,17 @@ class Notificacao extends Model
         'lida_em' => 'datetime',
     ];
 
+    /**
+     * Escopo: apenas notificações não lidas.
+     */
     public function scopeUnread($query)
     {
         return $query->whereNull('lida_em');
     }
 
+    /**
+     * Cria uma notificação para um destinatário (trilheiro ou guia).
+     */
     public static function notificar(string $type, int $id, string $tipo, string $titulo, string $mensagem, array $data = []): self
     {
         return self::create([

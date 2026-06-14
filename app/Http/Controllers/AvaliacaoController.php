@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class AvaliacaoController extends Controller
 {
+    /**
+     * Registra a avaliação de um agendamento concluído (uma por
+     * agendamento) e notifica o guia.
+     */
     public function store(Request $request, $id)
     {
         $request->validate([

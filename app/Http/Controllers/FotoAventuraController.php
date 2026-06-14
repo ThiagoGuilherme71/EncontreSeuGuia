@@ -12,6 +12,10 @@ class FotoAventuraController extends Controller
 {
     public const MAX_FOTOS_POR_PESSOA = 6;
 
+    /**
+     * Publica uma foto da aventura (trilha concluída), respeitando o
+     * limite por pessoa.
+     */
     public function store(Request $request, $id)
     {
         $request->validate([
@@ -47,6 +51,9 @@ class FotoAventuraController extends Controller
         return back()->with('success', 'Foto postada! 📸');
     }
 
+    /**
+     * Remove uma foto, permitido apenas a quem a publicou.
+     */
     public function destroy(Request $request, $id)
     {
         $foto = FotoAventura::with('agendamento')->findOrFail($id);
@@ -69,6 +76,11 @@ class FotoAventuraController extends Controller
         return back()->with('success', 'Foto removida.');
     }
 
+    /**
+     * Resolve o autor (trilheiro ou guia) a partir do guard autenticado.
+     *
+     * @return array{0: string, 1: int}
+     */
     private function resolveAutor(Request $request, Agendamento $agendamento): array
     {
         $user = $request->user('web');

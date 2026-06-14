@@ -14,14 +14,19 @@ use Inertia\Inertia;
 
 class SignupController extends Controller
 {
+    /**
+     * Exibe o formulário de cadastro de trilheiro.
+     */
     public function showSignupForm()
     {
         return Inertia::render('Auth/Signup');
     }
 
+    /**
+     * Cria a conta do trilheiro e já o autentica.
+     */
     public function signup(Request $request)
     {
-
         $request->validate([
             'nome' => 'required',
             'email' => 'required|email|unique:users,email',
@@ -40,13 +45,14 @@ class SignupController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // Autenticar e redirecionar para o dashboard
         auth()->login($user);
 
         return redirect()->route('landing-page')->with('success', 'Cadastro realizado com sucesso!');
-
     }
 
+    /**
+     * Exibe o formulário de cadastro de guia com idiomas e trilhas disponíveis.
+     */
     public function showGuiaSignupForm()
     {
         $idiomas = Idioma::all();
@@ -57,6 +63,9 @@ class SignupController extends Controller
         ]);
     }
 
+    /**
+     * Cria a conta do guia, vincula idiomas e trilhas e já o autentica.
+     */
     public function signupGuia(Request $request)
     {
         $request->validate([
@@ -95,5 +104,4 @@ class SignupController extends Controller
         auth('guia')->login($guia);
         return redirect()->route('guia-dash')->with('success', 'Cadastro realizado com sucesso!');
     }
-
 }

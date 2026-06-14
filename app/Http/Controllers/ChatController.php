@@ -10,6 +10,10 @@ use Inertia\Inertia;
 
 class ChatController extends Controller
 {
+    /**
+     * Exibe o chat de um agendamento e marca como lidas as mensagens
+     * recebidas da outra parte. O chat só fica disponível após o aceite.
+     */
     public function show(Request $request, $id)
     {
         $agendamento = Agendamento::with(['trilha:id,nome,cidade', 'guia:id,nome', 'user:id,nome'])
@@ -17,10 +21,8 @@ class ChatController extends Controller
 
         [$senderType, $senderId] = $this->resolveSender($request, $agendamento);
 
-        // chat existe a partir do aceite
         abort_if(in_array($agendamento->status, ['pending', 'rejected']), 403, 'O chat é liberado quando a proposta for aceita.');
 
-        // mensagens da outra parte ficam lidas ao abrir
         ChatMessage::where('agendamento_id', $agendamento->id)
             ->where('sender_type', '!=', $senderType)
             ->whereNull('read_at')
@@ -36,6 +38,9 @@ class ChatController extends Controller
         ]);
     }
 
+    /**
+     * Registra uma nova mensagem e notifica a outra parte.
+     */
     public function store(Request $request, $id)
     {
         $request->validate([
@@ -59,6 +64,11 @@ class ChatController extends Controller
         return back();
     }
 
+    /**
+     * Resolve se quem acessa é o trilheiro ou o guia do agendamento.
+     *
+     * @return array{0: string, 1: int}
+     */
     private function resolveSender(Request $request, Agendamento $agendamento): array
     {
         $user = $request->user('web');
@@ -74,20 +84,25 @@ class ChatController extends Controller
         abort(403);
     }
 
-    // envio liberado do aceite até o fim do dia anterior à trilha
+    /**
+     * Envio liberado do aceite até o fim do dia anterior à trilha.
+     */
     private function podeEnviar(Agendamento $agendamento): bool
     {
         return $agendamento->status === 'accepted'
             && now()->lt($agendamento->data->copy()->subDay()->endOfDay());
     }
 
+    /**
+     * Notifica a outra parte, evitando acumular notificações não lidas do
+     * mesmo chat.
+     */
     private function notificarOutraParte(Agendamento $agendamento, string $senderType): void
     {
         $destinoType = $senderType === 'user' ? 'guia' : 'user';
         $destinoId = $senderType === 'user' ? $agendamento->id_guia : $agendamento->id_users;
         $remetente = $senderType === 'user' ? $agendamento->user->nome : $agendamento->guia->nome;
 
-        // anti-spam: não acumula notificações não-lidas do mesmo chat
         $jaExiste = Notificacao::where('notificavel_type', $destinoType)
             ->where('notificavel_id', $destinoId)
             ->where('tipo', 'nova_mensagem')

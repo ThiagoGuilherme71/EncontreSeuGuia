@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 class NotificacaoController extends Controller
 {
+    /**
+     * Lista as 50 notificações mais recentes do usuário autenticado.
+     */
     public function index(Request $request)
     {
         [$type, $id] = $this->resolveNotificavel($request);
@@ -18,6 +21,9 @@ class NotificacaoController extends Controller
             ->get();
     }
 
+    /**
+     * Marca uma notificação do próprio usuário como lida.
+     */
     public function markRead(Request $request, $id)
     {
         [$type, $notificavelId] = $this->resolveNotificavel($request);
@@ -31,6 +37,9 @@ class NotificacaoController extends Controller
         return back();
     }
 
+    /**
+     * Marca todas as notificações não lidas do usuário como lidas.
+     */
     public function markAllRead(Request $request)
     {
         [$type, $notificavelId] = $this->resolveNotificavel($request);
@@ -43,6 +52,11 @@ class NotificacaoController extends Controller
         return back();
     }
 
+    /**
+     * Resolve o tipo e o id do destinatário a partir do guard autenticado.
+     *
+     * @return array{0: string, 1: int}
+     */
     private function resolveNotificavel(Request $request): array
     {
         $user = $request->user('web');

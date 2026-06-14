@@ -39,6 +39,10 @@ class ImageResizer
         ];
     }
 
+    /**
+     * Cria o recurso GD a partir do upload, respeitando a orientação EXIF
+     * (fotos de celular tiradas na vertical).
+     */
     private static function createFromFile(UploadedFile $file): \GdImage
     {
         $img = imagecreatefromstring(file_get_contents($file->getRealPath()));
@@ -47,7 +51,6 @@ class ImageResizer
             abort(422, 'Não foi possível processar essa imagem.');
         }
 
-        // respeita a orientação EXIF (foto tirada de celular na vertical)
         $exif = @exif_read_data($file->getRealPath());
         if (!empty($exif['Orientation'])) {
             $img = match ((int) $exif['Orientation']) {
@@ -61,6 +64,9 @@ class ImageResizer
         return $img;
     }
 
+    /**
+     * Redimensiona (se necessário) e codifica a imagem como JPEG (qualidade 80).
+     */
     private static function encode(\GdImage $source, int $maxWidth): string
     {
         $width = imagesx($source);

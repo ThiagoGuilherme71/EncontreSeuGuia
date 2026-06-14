@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agendamento;
 use App\Models\Trilha;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -9,18 +10,20 @@ use Inertia\Inertia;
 class ClienteController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Painel do trilheiro com seus agendamentos.
+     *
+     * No modo sandbox, agendamentos aceitos com data já passada são
+     * marcados como concluídos automaticamente ao abrir o painel.
      */
     public function index(Request $request)
     {
         $user = $request->user('web');
 
-        // Sandbox: trilhas com data passada e aceitas viram "concluídas" automaticamente
-        \App\Models\Agendamento::where('status', 'accepted')
+        Agendamento::where('status', 'accepted')
             ->whereDate('data', '<', today())
             ->update(['status' => 'completed']);
 
-        $agendamentos = \App\Models\Agendamento::with(['trilha:id,nome,cidade,foto', 'guia:id,nome'])
+        $agendamentos = Agendamento::with(['trilha:id,nome,cidade,foto', 'guia:id,nome'])
             ->where('id_users', $user->id)
             ->orderByDesc('created_at')
             ->get();
@@ -31,7 +34,11 @@ class ClienteController extends Controller
         ]);
     }
 
-    public function landingPage(Request $request){
+    /**
+     * Página inicial pública com a listagem e os filtros de trilhas.
+     */
+    public function landingPage(Request $request)
+    {
         $query = Trilha::with('dificuldade')->withCount(['guias' => function ($q) {
             $q->where('trilhas_guias.congelada', false);
         }]);

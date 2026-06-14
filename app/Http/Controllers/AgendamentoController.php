@@ -10,6 +10,10 @@ use Inertia\Inertia;
 
 class AgendamentoController extends Controller
 {
+    /**
+     * Formulário de proposta, com os horários já ocupados do guia para
+     * detecção de conflito no cliente.
+     */
     public function create(Request $request)
     {
         $trilha = Trilha::with('dificuldade')->findOrFail($request->query('trilha'));
@@ -35,6 +39,10 @@ class AgendamentoController extends Controller
         ]);
     }
 
+    /**
+     * Cria a proposta (pendente), validando conflito de horário, e
+     * notifica o guia.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -90,6 +98,9 @@ class AgendamentoController extends Controller
             ->with('success', 'Proposta enviada! Aguarde a resposta do guia.');
     }
 
+    /**
+     * Detalhe do agendamento, restrito aos participantes.
+     */
     public function show(Request $request, $id)
     {
         $agendamento = Agendamento::with(['trilha.dificuldade', 'guia:id,nome,telefone,anos_experiencia,foto', 'user:id,nome,telefone,email,foto', 'avaliacao'])
@@ -120,6 +131,9 @@ class AgendamentoController extends Controller
         ]);
     }
 
+    /**
+     * Guia aceita uma proposta pendente e notifica o trilheiro.
+     */
     public function accept(Request $request, $id)
     {
         $guia = $request->user('guia');
@@ -142,6 +156,10 @@ class AgendamentoController extends Controller
         return back()->with('success', 'Proposta aceita!');
     }
 
+    /**
+     * Guia rejeita uma proposta pendente, com motivo opcional, e notifica
+     * o trilheiro.
+     */
     public function reject(Request $request, $id)
     {
         $request->validate(['motivo' => 'nullable|string|max:500']);
@@ -174,6 +192,9 @@ class AgendamentoController extends Controller
         return back()->with('success', 'Proposta rejeitada.');
     }
 
+    /**
+     * Cancela um agendamento (até 1 dia antes) e notifica a outra parte.
+     */
     public function cancel(Request $request, $id)
     {
         $agendamento = Agendamento::with('trilha:id,nome')->findOrFail($id);
@@ -215,6 +236,9 @@ class AgendamentoController extends Controller
         return back()->with('success', 'Agendamento cancelado.');
     }
 
+    /**
+     * Tela de pagamento de uma proposta aceita e ainda não paga.
+     */
     public function payment(Request $request, $id)
     {
         $agendamento = Agendamento::with(['trilha:id,nome,cidade,foto', 'guia:id,nome'])
@@ -228,6 +252,9 @@ class AgendamentoController extends Controller
         ]);
     }
 
+    /**
+     * Confirma o pagamento (sandbox) registrando a data de pagamento.
+     */
     public function pay(Request $request, $id)
     {
         $agendamento = Agendamento::where('id_users', $request->user('web')->id)
@@ -241,6 +268,9 @@ class AgendamentoController extends Controller
             ->with('success', 'Pagamento confirmado! (sandbox)');
     }
 
+    /**
+     * Recibo de um agendamento pago, restrito aos participantes.
+     */
     public function receipt(Request $request, $id)
     {
         $agendamento = Agendamento::with(['trilha.dificuldade', 'guia:id,nome,telefone', 'user:id,nome,email,cpf'])
@@ -254,6 +284,10 @@ class AgendamentoController extends Controller
         ]);
     }
 
+    /**
+     * Verifica se há sobreposição de horário com outro agendamento do guia
+     * na mesma data. Retorna a mensagem de erro ou null.
+     */
     private function verificarConflito(int $idGuia, string $data, string $horario, ?float $duracao): ?string
     {
         $agendamentos = Agendamento::with('trilha:id,nome,tempo_estimado_horas')
@@ -283,6 +317,10 @@ class AgendamentoController extends Controller
         return null;
     }
 
+    /**
+     * Aborta com 403 se quem acessa não for o trilheiro nem o guia do
+     * agendamento.
+     */
     private function authorizeParticipant(Request $request, Agendamento $agendamento): void
     {
         $user = $request->user('web');
@@ -294,6 +332,10 @@ class AgendamentoController extends Controller
         abort_unless($isOwner, 403);
     }
 
+    /**
+     * Indica se o agendamento ainda pode ser cancelado (até o fim do dia
+     * anterior à trilha).
+     */
     private function podeCancelar(Agendamento $agendamento): bool
     {
         if (!in_array($agendamento->status, ['pending', 'accepted'])) {

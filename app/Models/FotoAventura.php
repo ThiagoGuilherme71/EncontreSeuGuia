@@ -12,12 +12,17 @@ class FotoAventura extends Model
         'agendamento_id', 'postado_por_type', 'postado_por_id', 'path', 'thumb_path', 'legenda',
     ];
 
+    /**
+     * Agendamento ao qual a foto pertence.
+     */
     public function agendamento()
     {
         return $this->belongsTo(Agendamento::class);
     }
 
-    // autor resolvido conforme o tipo (user ou guia)
+    /**
+     * Autor da foto, resolvido conforme o tipo (trilheiro ou guia).
+     */
     public function getAutorAttribute()
     {
         return $this->postado_por_type === 'user'
