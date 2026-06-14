@@ -9,12 +9,14 @@ class Idioma extends Model
 {
     use HasFactory;
 
-    protected $table = 'idiomas'; // Define a tabela correta
-    protected $fillable = ['nome_idioma']; // Permite atribuição em massa
+    protected $table = 'idiomas';
+    protected $fillable = ['nome_idioma'];
 
+    /**
+     * Guias que falam este idioma.
+     */
     public function guias()
     {
         return $this->belongsToMany(Guia::class, 'idiomas_guias');
     }
-
 }

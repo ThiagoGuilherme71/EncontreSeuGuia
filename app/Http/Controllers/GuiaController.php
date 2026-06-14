@@ -2,95 +2,84 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agendamento;
+use App\Models\Avaliacao;
 use App\Models\Guia;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class GuiaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Painel do guia: trilhas, propostas pendentes/aceitas e histórico.
+     *
+     * No modo sandbox, agendamentos aceitos com data já passada são
+     * marcados como concluídos automaticamente ao abrir o painel.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('guia.main-guia');
-    }
-    public function list()
-    {
-        return view('guia-list');
-    }
-    public function getAllGuias(){
-        $guias = Guia::all();
-        return $guias;
-    }
+        $guia = $request->user('guia');
 
-    public function exibirConta()
-    {
-        // Mock da variável guia
-        $guia = (object) [
-            'id' => 1,
-            'nome' => 'João Silva',
-            'email' => 'joao.silva@example.com',
-            'telefone' => '(71) 91234-5678',
-            'data_nascimento' => '1985-08-15',
-            'cpf' => '123.456.789-00',
-            'cep' => '40000-000',
-            'endereco' => 'Rua das Trilhas, 123, Salvador - BA',
-            'link_instagram' => 'https://instagram.com/joaosilva',
-            'link_facebook' => 'https://facebook.com/joaosilva',
-            'foto' => null, // Ou 'caminho/para/foto.jpg' para simular uma foto existente
-            'doc_frente' => null, // Mock para arquivo de documento frente
-            'doc_verso' => null, // Mock para arquivo de documento verso
-        ];
+        Agendamento::where('status', 'accepted')
+            ->whereDate('data', '<', today())
+            ->update(['status' => 'completed']);
 
-        return view('conta.perfilGuia', compact('guia'));
-    }
+        $trilhasCriadas = $guia->trilhas()
+            ->with('dificuldade')
+            ->where('criado_por_guia', $guia->id)
+            ->get();
 
+        $trilhasCadastradas = $guia->trilhas()
+            ->with('dificuldade')
+            ->where(function ($q) use ($guia) {
+                $q->whereNull('criado_por_guia')->orWhere('criado_por_guia', '!=', $guia->id);
+            })
+            ->get();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $propostas = Agendamento::with(['trilha:id,nome,cidade,foto', 'user:id,nome'])
+            ->where('id_guia', $guia->id)
+            ->whereIn('status', ['pending', 'accepted'])
+            ->orderByRaw("FIELD(status, 'pending') DESC")
+            ->orderBy('data')
+            ->get();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        $historico = Agendamento::with(['trilha:id,nome,cidade,foto', 'user:id,nome', 'avaliacao'])
+            ->where('id_guia', $guia->id)
+            ->whereIn('status', ['completed', 'rejected', 'cancelled'])
+            ->orderByDesc('data')
+            ->get();
+
+        return Inertia::render('Guia/Dashboard', [
+            'trilhas_criadas' => $trilhasCriadas,
+            'trilhas_cadastradas' => $trilhasCadastradas,
+            'propostas' => $propostas,
+            'historico' => $historico,
+        ]);
     }
 
     /**
-     * Display the specified resource.
+     * Retorna todos os guias (endpoint utilitário).
      */
-    public function show(string $id)
+    public function getAllGuias()
     {
-        //
+        return Guia::all();
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Página de conta do guia com a média e o total de avaliações.
      */
-    public function edit(string $id)
+    public function exibirConta(Request $request)
     {
-        //
-    }
+        $guia = $request->user('guia');
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $mediaAvaliacoes = Avaliacao::where('id_guia', $guia->id)->avg('nota');
+        $totalAvaliacoes = Avaliacao::where('id_guia', $guia->id)->count();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return Inertia::render('Guia/Conta', [
+            'perfil' => $guia->only('id', 'nome', 'email', 'telefone', 'cep', 'endereco', 'anos_experiencia', 'link_instagram', 'link_facebook', 'data_nascimento', 'foto'),
+            'idiomas' => $guia->idiomas()->pluck('nome_idioma'),
+            'media_avaliacoes' => $mediaAvaliacoes ? round($mediaAvaliacoes, 1) : null,
+            'total_avaliacoes' => $totalAvaliacoes,
+        ]);
     }
 }

@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -24,6 +22,7 @@ class User extends Authenticatable
         'telefone',
         'data_nascimento',
         'cpf',
+        'foto',
     ];
 
     /**
@@ -35,10 +34,15 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    /**
+     * Indica se este usuário também possui cadastro de guia.
+     */
     public function isGuia()
     {
         return \DB::table('guias')->where('user_id', $this->id)->exists();
     }
+
     /**
      * Get the attributes that should be cast.
      *
