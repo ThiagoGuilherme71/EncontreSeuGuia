@@ -43,7 +43,7 @@ export default function Navbar({ auth, notifications = [], unreadCount = 0 }) {
                             />
                         </div>
                         <span className="font-display font-bold text-[#1C1917] hidden sm:block text-lg leading-none">
-                            Trilhas
+                            Encontre seu Guia
                         </span>
                     </Link>
 

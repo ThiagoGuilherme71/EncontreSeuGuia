@@ -37,10 +37,10 @@ export default function AppLayout({ children, className, hideBottomNav = false }
                 <footer className="hidden sm:block border-t-2 border-[#1C1917] bg-[#1C1917] text-[#E3CDA8]">
                     <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div>
-                            <p className="font-display font-bold text-lg text-white">Trilhas</p>
+                            <p className="font-display font-bold text-lg text-white">Encontre seu Guia</p>
                             <p className="text-sm opacity-70 mt-1">Conectando trilheiros e guias</p>
                         </div>
-                        <p className="text-sm opacity-50">© 2025 Encontre seu Guia. Todos os direitos reservados.</p>
+                        <p className="text-sm opacity-50">© 2026 Encontre seu Guia. Todos os direitos reservados.</p>
                     </div>
                 </footer>
             )}

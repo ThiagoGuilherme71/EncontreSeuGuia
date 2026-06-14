@@ -25,9 +25,9 @@ export default function AuthLayout({ children, title, subtitle }) {
                 <div className="relative text-white text-center max-w-sm">
                     {/* Container creme para a logo não se perder no fundo verde */}
                     <div className="w-28 h-28 rounded-3xl bg-[#ECE1CB] border-2 border-white/30 shadow-[4px_4px_0px_rgba(0,0,0,0.2)] flex items-center justify-center mx-auto mb-6 p-3">
-                        <img src="/images/logo-montanha.svg" alt="Trilhas" className="w-full h-full" />
+                        <img src="/images/logo-montanha.svg" alt="Encontre seu Guia" className="w-full h-full" />
                     </div>
-                    <h1 className="font-display font-bold text-4xl mb-4">Trilhas</h1>
+                    <h1 className="font-display font-bold text-4xl mb-4">Encontre seu Guia</h1>
                     <p className="text-lg opacity-80 leading-relaxed">
                         Conectando trilheiros e guias para experiências inesquecíveis na natureza.
                     </p>
