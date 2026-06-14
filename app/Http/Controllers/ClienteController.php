@@ -2,82 +2,70 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Guia;
+use App\Models\Agendamento;
 use App\Models\Trilha;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ClienteController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Painel do trilheiro com seus agendamentos.
+     *
+     * No modo sandbox, agendamentos aceitos com data já passada são
+     * marcados como concluídos automaticamente ao abrir o painel.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $cliente = (object)[
-            'id' => 1,
-            'nome' => 'João da Chapada',
-            'email' => 'joao@aventura.com',
-            'telefone' => '(75) 91234-5678',
-            'data_nascimento' => '1990-05-15',
-            'cpf' => '123.456.789-00',
-            'foto' => null, // ou 'perfil.jpg' se quiser simular uma foto existente
-        ];
+        $user = $request->user('web');
 
-        return view('auth.perfilCliente', compact('cliente'));
-    }
+        Agendamento::where('status', 'accepted')
+            ->whereDate('data', '<', today())
+            ->update(['status' => 'completed']);
 
-    public function landingPage(){
-        $trilhas = Trilha::all();
-        $guias = Guia::all();
-        return view('landingpage' , compact('guias', 'trilhas'));
-    }
+        $agendamentos = Agendamento::with(['trilha:id,nome,cidade,foto', 'guia:id,nome'])
+            ->where('id_users', $user->id)
+            ->orderByDesc('created_at')
+            ->get();
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return Inertia::render('User/Dashboard', [
+            'perfil' => $user->only('id', 'nome', 'email', 'telefone', 'cpf', 'data_nascimento', 'foto'),
+            'agendamentos' => $agendamentos,
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Página inicial pública com a listagem e os filtros de trilhas.
      */
-    public function store(Request $request)
+    public function landingPage(Request $request)
     {
-        //
-    }
+        $query = Trilha::with('dificuldade')->withCount(['guias' => function ($q) {
+            $q->where('trilhas_guias.congelada', false);
+        }]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        if ($request->filled('cidade')) {
+            $query->where('cidade', $request->cidade);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        if ($request->filled('busca')) {
+            $query->where('nome', 'like', '%' . $request->busca . '%');
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $trilhas = $query->latest()->paginate(12)->withQueryString();
+        $cidades = Trilha::select('cidade')->distinct()->orderBy('cidade')->pluck('cidade');
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return Inertia::render('Home/Index', [
+            'trilhas' => $trilhas->items(),
+            'paginacao' => [
+                'pagina_atual' => $trilhas->currentPage(),
+                'ultima_pagina' => $trilhas->lastPage(),
+                'total' => $trilhas->total(),
+            ],
+            'cidades' => $cidades,
+            'filtros' => [
+                'cidade' => $request->cidade,
+                'busca' => $request->busca,
+            ],
+        ]);
     }
 }

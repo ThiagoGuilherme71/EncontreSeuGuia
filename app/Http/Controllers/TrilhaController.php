@@ -2,90 +2,285 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Guia;
+use App\Models\Agendamento;
+use App\Models\Avaliacao;
+use App\Models\Dificuldade;
 use App\Models\Trilha;
+use App\Support\ImageResizer;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TrilhaController extends Controller
 {
-    public function trilhaSelecionada(){
-        return view('trilha.trilhaPesquisa');
-    }
-
+    /**
+     * Redireciona a busca por nome para a página inicial.
+     */
     public function buscar(Request $request)
     {
-        $nome = $request->input('nome');
-
-
-        if ($nome) {
-            return redirect()->route('trilhas.exibir', ['nome' => 'pedra-encantada']);
-        }
-
-        // fallback ou mensagem de erro
-        return redirect()->back()->with('error', 'trilha não encontrada');
+        return redirect()->route('landing-page', ['busca' => $request->input('nome')]);
     }
 
+    /**
+     * Retorna todas as trilhas (endpoint utilitário).
+     */
     public function getAllTrilhas()
     {
-        $trilhas = Trilha::all();
-        return $trilhas;
-//         tipo de retorno:
-//        "id" => 2
-//        "nome" => "Thiago Guilherme"
-//        "descricao" => "rth"
-//        "id_dificuldade" => 1
-//        "cidade" => "fh"
-//        "foto" => "C:\Users\thiag\AppData\Local\Temp\php787A.tmp"
-//        "created_at" => "2025-04-26 00:00:14"
-//        "updated_at" => "2025-04-26 00:00:14"
+        return Trilha::all();
     }
+
+    /**
+     * Retorna uma trilha pelo id (endpoint utilitário).
+     */
     public function getTrilha($id)
     {
-        $trilha = Trilha::where('id', $id)->first();
-        return $trilha;
-//         tipo de retorno:
-//        "id" => 2
-//        "nome" => "Thiago Guilherme"
-//        "descricao" => "rth"
-//        "id_dificuldade" => 1
-//        "cidade" => "fh"
-//        "foto" => "C:\Users\thiag\AppData\Local\Temp\php787A.tmp"
-//        "created_at" => "2025-04-26 00:00:14"
-//        "updated_at" => "2025-04-26 00:00:14"
+        return Trilha::where('id', $id)->first();
     }
 
-    public function exibir($nome)
+    /**
+     * Página pública da trilha: guias ativos, avaliações e aventuras.
+     */
+    public function exibir($id)
     {
+        $trilha = Trilha::with('dificuldade')->findOrFail($id);
 
-        if ($nome) {
-            $trilha = Trilha::where('nome', $nome)->first();
+        $guias = $trilha->guiasAtivos()
+            ->select('guias.id', 'guias.nome', 'guias.anos_experiencia', 'guias.link_instagram')
+            ->withPivot('preco_por_pessoa')
+            ->with('idiomas:id,nome_idioma')
+            ->get()
+            ->map(function ($guia) {
+                $guia->media_avaliacoes = Avaliacao::where('id_guia', $guia->id)->avg('nota');
+                $guia->total_avaliacoes = Avaliacao::where('id_guia', $guia->id)->count();
+                $guia->preco_por_pessoa = $guia->pivot->preco_por_pessoa;
+                return $guia;
+            });
 
-            $guias = $trilha->guias()->select('nome', 'anos_experiencia')->get();
+        $avaliacoes = Avaliacao::with(['user:id,nome,foto', 'guia:id,nome,foto'])
+            ->whereIn('id_agendamento', Agendamento::where('id_trilha', $trilha->id)->pluck('id'))
+            ->latest()
+            ->limit(6)
+            ->get();
 
+        $aventuras = Agendamento::with(['user:id,nome,foto', 'guia:id,nome,foto', 'fotos'])
+            ->where('id_trilha', $trilha->id)
+            ->where('status', 'completed')
+            ->whereHas('fotos')
+            ->orderByDesc('data')
+            ->limit(20)
+            ->get()
+            ->map(fn ($a) => [
+                'id' => $a->id,
+                'data' => $a->data,
+                'user' => $a->user,
+                'guia' => $a->guia,
+                'fotos' => $a->fotos->map(fn ($f) => [
+                    'id' => $f->id,
+                    'path' => $f->path,
+                    'thumb_path' => $f->thumb_path,
+                    'legenda' => $f->legenda,
+                    'postado_por_type' => $f->postado_por_type,
+                ])->values(),
+            ]);
 
-            return view('trilha.trilhaPesquisa', compact('trilha', 'guias'));
+        return Inertia::render('Trilha/Show', [
+            'trilha' => $trilha,
+            'guias' => $guias,
+            'avaliacoes' => $avaliacoes,
+            'aventuras' => $aventuras,
+        ]);
+    }
+
+    /**
+     * Formulário de criação com a lista de trilhas em que o guia ainda
+     * não está inscrito.
+     */
+    public function create(Request $request)
+    {
+        $guia = $request->user('guia');
+        $inscritas = $guia->trilhas()->pluck('trilhas.id');
+
+        $disponiveis = Trilha::with('dificuldade')
+            ->whereNotIn('id', $inscritas)
+            ->orderBy('cidade')
+            ->orderBy('nome')
+            ->get(['id', 'nome', 'estado', 'cidade', 'id_dificuldade', 'foto']);
+
+        return Inertia::render('Trilha/Create', [
+            'dificuldades' => Dificuldade::all(),
+            'trilhas_disponiveis' => $disponiveis,
+        ]);
+    }
+
+    /**
+     * Inscreve o guia autenticado como guia de uma trilha existente.
+     */
+    public function inscrever(Request $request, $id)
+    {
+        $guia = $request->user('guia');
+        $trilha = Trilha::findOrFail($id);
+
+        if ($guia->trilhas()->where('trilha_id', $id)->exists()) {
+            return back()->withErrors(['trilha' => 'Você já está inscrito nesta trilha.']);
         }
 
-        return abort(404);
+        $guia->trilhas()->syncWithoutDetaching([$trilha->id]);
+
+        return redirect()->route('guia-dash')
+            ->with('success', "Você agora é guia de \"{$trilha->nome}\"!");
     }
-    public function create(){
-    return view('trilha.formTrilha');
-    }
-    public function store(Request $request){
+
+    /**
+     * Cria uma trilha; o guia criador já entra inscrito nela.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nome'                      => 'required|string|max:255|unique:trilhas,nome',
+            'descricao'                 => 'required|string|max:5000',
+            'id_dificuldade'            => 'required|exists:dificuldades,id',
+            'estado'                    => 'required|string|size:2',
+            'cidade'                    => 'required|string|max:255',
+            'foto'                      => 'required|image|max:4096',
+            'distancia_km'              => 'nullable|numeric|min:0|max:9999',
+            'tempo_estimado_horas'      => 'nullable|numeric|min:0|max:999',
+            'ponto_encontro_lat'        => 'nullable|numeric|between:-90,90',
+            'ponto_encontro_lng'        => 'nullable|numeric|between:-180,180',
+            'ponto_encontro_descricao'  => 'nullable|string|max:500',
+            'o_que_levar'               => 'nullable|array',
+            'o_que_levar.*'             => 'string|max:100',
+        ], [
+            'foto.uploaded' => 'A foto é muito grande. O servidor aceita no máximo 4MB.',
+            'foto.max'      => 'A foto deve ter no máximo 4MB.',
+        ]);
+
+        $guia = $request->user('guia');
+
         $trilha = Trilha::create([
-            'nome' => $request->nome,
-            'descricao' => $request->descricao,
-            'id_dificuldade' => $request->id_dificuldade,
-            'cidade' => $request->cidade,
+            'nome'                     => $request->nome,
+            'descricao'                => $request->descricao,
+            'id_dificuldade'           => $request->id_dificuldade,
+            'estado'                   => $request->estado,
+            'cidade'                   => $request->cidade,
+            'criado_por_guia'          => $guia->id,
+            'distancia_km'             => $request->distancia_km,
+            'tempo_estimado_horas'     => $request->tempo_estimado_horas,
+            'ponto_encontro_lat'       => $request->ponto_encontro_lat,
+            'ponto_encontro_lng'       => $request->ponto_encontro_lng,
+            'ponto_encontro_descricao' => $request->ponto_encontro_descricao,
+            'o_que_levar'              => $request->o_que_levar ?? [],
         ]);
 
         if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
-            $path = $request->file('foto')->store('trilhas', 'public');
-            $trilha->foto = 'storage/' . $path;
-            $trilha->save();
+            $trilha->update(['foto' => ImageResizer::save($request->file('foto'), 'trilhas', 1600)['path']]);
         }
 
-        return redirect()->route('guia-dash');
+        $guia->trilhas()->syncWithoutDetaching([$trilha->id]);
 
+        return redirect()->route('guia-dash')
+            ->with('success', 'Trilha criada e aprovada automaticamente! (sandbox)');
+    }
+
+    /**
+     * Formulário de edição. No sandbox, qualquer guia inscrito na trilha
+     * pode editá-la (não apenas o criador).
+     */
+    public function edit(Request $request, $id)
+    {
+        $guia = $request->user('guia');
+        $trilha = $guia->trilhas()->with('dificuldade')->findOrFail($id);
+
+        return Inertia::render('Trilha/Edit', [
+            'trilha' => $trilha,
+            'dificuldades' => Dificuldade::all(),
+            'sou_criador' => $trilha->criado_por_guia === $guia->id,
+        ]);
+    }
+
+    /**
+     * Atualiza os dados da trilha de um guia inscrito.
+     */
+    public function update(Request $request, $id)
+    {
+        $guia = $request->user('guia');
+        $trilha = $guia->trilhas()->findOrFail($id);
+
+        $request->validate([
+            'nome'                     => 'required|string|max:255|unique:trilhas,nome,' . $trilha->id,
+            'descricao'                => 'required|string|max:5000',
+            'id_dificuldade'           => 'required|exists:dificuldades,id',
+            'estado'                   => 'required|string|size:2',
+            'cidade'                   => 'required|string|max:255',
+            'foto'                     => 'nullable|image|max:4096',
+            'distancia_km'             => 'nullable|numeric|min:0|max:9999',
+            'tempo_estimado_horas'     => 'nullable|numeric|min:0|max:999',
+            'ponto_encontro_lat'       => 'nullable|numeric|between:-90,90',
+            'ponto_encontro_lng'       => 'nullable|numeric|between:-180,180',
+            'ponto_encontro_descricao' => 'nullable|string|max:500',
+            'o_que_levar'              => 'nullable|array',
+            'o_que_levar.*'            => 'string|max:100',
+        ], [
+            'foto.uploaded' => 'A foto é muito grande. O servidor aceita no máximo 4MB.',
+            'foto.max'      => 'A foto deve ter no máximo 4MB.',
+        ]);
+
+        $trilha->update($request->only(
+            'nome', 'descricao', 'id_dificuldade', 'estado', 'cidade',
+            'distancia_km', 'tempo_estimado_horas',
+            'ponto_encontro_lat', 'ponto_encontro_lng', 'ponto_encontro_descricao',
+        ));
+        $trilha->update(['o_que_levar' => $request->o_que_levar ?? []]);
+
+        if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
+            $trilha->update(['foto' => ImageResizer::save($request->file('foto'), 'trilhas', 1600)['path']]);
+        }
+
+        $msg = $trilha->criado_por_guia === $guia->id
+            ? 'Edição aprovada automaticamente! (sandbox)'
+            : 'Solicitação de edição aprovada automaticamente! (sandbox)';
+
+        return redirect()->route('guia-dash')->with('success', $msg);
+    }
+
+    /**
+     * Atualiza o preço por pessoa da inscrição do guia na trilha.
+     */
+    public function atualizarInscricao(Request $request, $id)
+    {
+        $guia = $request->user('guia');
+        $guia->trilhas()->findOrFail($id);
+
+        $request->validate([
+            'preco_por_pessoa' => 'nullable|numeric|min:0|max:99999',
+        ]);
+
+        $guia->trilhas()->updateExistingPivot($id, [
+            'preco_por_pessoa' => $request->preco_por_pessoa,
+        ]);
+
+        return back()->with('success', 'Inscrição atualizada!');
+    }
+
+    /**
+     * Congela a inscrição: o guia deixa de aparecer como disponível.
+     */
+    public function congelar(Request $request, $id)
+    {
+        $guia = $request->user('guia');
+        $guia->trilhas()->findOrFail($id);
+        $guia->trilhas()->updateExistingPivot($id, ['congelada' => true]);
+
+        return back()->with('success', 'Inscrição congelada. Você não aparece mais como guia disponível nessa trilha.');
+    }
+
+    /**
+     * Reativa uma inscrição congelada.
+     */
+    public function reativar(Request $request, $id)
+    {
+        $guia = $request->user('guia');
+        $guia->trilhas()->findOrFail($id);
+        $guia->trilhas()->updateExistingPivot($id, ['congelada' => false]);
+
+        return back()->with('success', 'Inscrição reativada!');
     }
 }

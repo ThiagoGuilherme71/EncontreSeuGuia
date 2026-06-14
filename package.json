@@ -17,9 +17,19 @@
         "@fullcalendar/core": "^6.1.17",
         "@fullcalendar/daygrid": "^6.1.17",
         "@fullcalendar/interaction": "^6.1.17",
+        "@headlessui/react": "^2.2.10",
+        "@inertiajs/react": "^3.4.0",
+        "@vitejs/plugin-react": "^4.7.0",
         "alpinejs": "^3.14.9",
         "autoprefixer": "^10.4.21",
+        "clsx": "^2.1.1",
+        "leaflet": "^1.9.4",
+        "lucide-react": "^1.17.0",
         "postcss": "^8.5.3",
-        "sweetalert2": "^11.17.2"
+        "react": "^19.2.7",
+        "react-dom": "^19.2.7",
+        "react-leaflet": "^5.0.0",
+        "sweetalert2": "^11.17.2",
+        "tailwind-merge": "^3.6.0"
     }
 }

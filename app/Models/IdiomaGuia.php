@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class IdiomaGuia extends Model
 {
-    protected $table = 'idiomas_guias'; // Nome da tabela no banco
-    public $timestamps = true; // Habilita os timestamps
+    protected $table = 'idiomas_guias';
+    public $timestamps = true;
     protected $fillable = ['guia_id', 'idioma_id'];
 }
