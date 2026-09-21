@@ -4,10 +4,27 @@ services:
         container_name: laravel_app
         restart: unless-stopped
         working_dir: /var/www
+        environment:
+            # "auto" faz a etapa so quando ela e necessaria. Force pontualmente
+            # com, por exemplo:  AUTO_BUILD=true docker compose up -d
+            AUTO_INSTALL: "${AUTO_INSTALL:-true}"
+            AUTO_BUILD: "${AUTO_BUILD:-auto}"
+            AUTO_MIGRATE: "${AUTO_MIGRATE:-true}"
+            AUTO_SEED: "${AUTO_SEED:-auto}"
+            DB_WAIT_TIMEOUT: "${DB_WAIT_TIMEOUT:-90}"
         volumes:
             - .:/var/www
         depends_on:
-            - db
+            db:
+                condition: service_healthy
+        healthcheck:
+            # A porta 9000 so abre depois que o entrypoint termina: serve como
+            # sinal de "aplicacao pronta" para o nginx esperar.
+            test: ["CMD-SHELL", "timeout 1 bash -c '</dev/tcp/127.0.0.1/9000' || exit 1"]
+            interval: 10s
+            timeout: 5s
+            retries: 60
+            start_period: 30s
         networks:
             - laravel
 
@@ -24,6 +41,12 @@ services:
             - "3306:3306"
         volumes:
             - dbdata:/var/lib/mysql
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+            interval: 5s
+            timeout: 5s
+            retries: 30
+            start_period: 20s
         networks:
             - laravel
 
@@ -37,7 +60,33 @@ services:
             - .:/var/www
             - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
         depends_on:
-            - app
+            app:
+                condition: service_healthy
+        networks:
+            - laravel
+
+    # Dev server do Vite com HMR. Fica fora do `up` padrao:
+    #   docker compose --profile dev up -d
+    vite:
+        # Mesma imagem do app: compartilha o Node 22 e a lib de permissoes, para
+        # os dois containers escreverem em node_modules/ com o mesmo dono.
+        build: .
+        container_name: laravel_vite
+        restart: unless-stopped
+        working_dir: /var/www
+        profiles: ["dev"]
+        environment:
+            # Bind mounts nem sempre propagam eventos de inotify para o container;
+            # o polling garante que o HMR enxergue as edicoes feitas no host.
+            VITE_USE_POLLING: "${VITE_USE_POLLING:-true}"
+        ports:
+            - "5173:5173"
+        volumes:
+            - .:/var/www
+        entrypoint: ["vite-entrypoint.sh"]
+        depends_on:
+            app:
+                condition: service_healthy
         networks:
             - laravel
 
