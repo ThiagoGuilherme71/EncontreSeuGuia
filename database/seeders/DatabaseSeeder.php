@@ -48,16 +48,16 @@ class DatabaseSeeder extends Seeder
 
         // Guia
         $guia = Guia::firstOrCreate(
-            ['email' => 'carlos.nascimento.guia@gmail.com'],
+            ['email' => 'guia@exemplo.test'],
             [
                 'nome'             => 'Carlos Eduardo Nascimento',
-                'telefone'         => '(75) 98234-5671',
+                'telefone'         => '(75) 90000-0000',
                 'data_nascimento'  => '1983-09-14',
-                'cpf'              => '235.489.126-77',
+                'cpf'              => '000.000.000-00',
                 'cep'              => '46900-000',
                 'endereco'         => 'Rua da Praça, 45 — Lençóis, BA',
                 'anos_experiencia' => 14,
-                'link_instagram'   => '@carlosguia.chapada',
+                'link_instagram'   => '@guia.exemplo',
                 'link_facebook'    => null,
                 'doc_frente'       => null,
                 'doc_verso'        => null,
@@ -79,12 +79,12 @@ class DatabaseSeeder extends Seeder
 
         // Trilheiro
         User::firstOrCreate(
-            ['email' => 'thiagoguilherme.barbosaa@gmail.com'],
+            ['email' => 'trilheiro@exemplo.test'],
             [
-                'nome'            => 'Thiago Guilherme Barbosa',
-                'telefone'        => '(71) 98821-3047',
+                'nome'            => 'Ana Souza',
+                'telefone'        => '(71) 90000-0000',
                 'data_nascimento' => '2001-03-22',
-                'cpf'             => '412.873.095-60',
+                'cpf'             => '111.111.111-11',
                 'password'        => bcrypt('123456'),
             ]
         );

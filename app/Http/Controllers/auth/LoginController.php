@@ -34,6 +34,7 @@ class LoginController extends Controller
         }
 
         if (Auth::guard('guia')->attempt(['email' => $request->email, 'password' => $request->password])) {
+            $request->session()->regenerate();
             return redirect()->route('guia-dash');
         }
 
@@ -43,13 +44,18 @@ class LoginController extends Controller
     /**
      * Encerra a sessão do guard atualmente autenticado.
      */
-    public function logout()
+    public function logout(Request $request)
     {
         if (Auth::guard('guia')->check()) {
             Auth::guard('guia')->logout();
         } else {
             Auth::guard('web')->logout();
         }
+
+        // Descarta os dados da sessao e emite um novo token CSRF, para que a
+        // sessao anterior nao possa ser reaproveitada.
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('login')->with('success', 'Você saiu com sucesso.');
     }

@@ -90,8 +90,10 @@ class SignupController extends Controller
             'endereco' => $request->endereco,
             'link_instagram' => $request->link_instagram,
             'link_facebook' => $request->link_facebook,
-            'doc_frente' => $request->hasFile('doc_frente') ? $request->file('doc_frente')->store('docs/guias', 'public') : null,
-            'doc_verso' => $request->hasFile('doc_verso') ? $request->file('doc_verso')->store('docs/guias', 'public') : null,
+            // Disco "local" (storage/app/private), nao "public": documentos de
+            // identidade nao podem ser servidos por URL direta.
+            'doc_frente' => $request->hasFile('doc_frente') ? $request->file('doc_frente')->store('docs/guias', 'local') : null,
+            'doc_verso' => $request->hasFile('doc_verso') ? $request->file('doc_verso')->store('docs/guias', 'local') : null,
             'password' => Hash::make($request->password),
         ]);
         if ($request->idiomas) {

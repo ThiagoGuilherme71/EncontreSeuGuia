@@ -25,7 +25,7 @@ export default function Navbar({ auth, notifications = [], unreadCount = 0 }) {
     const isGuia = !!auth?.guia;
 
     function logout() {
-        router.get('/logout');
+        router.post('/logout');
     }
 
     return (

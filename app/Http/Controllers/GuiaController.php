@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Agendamento;
 use App\Models\Avaliacao;
-use App\Models\Guia;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -55,14 +54,6 @@ class GuiaController extends Controller
             'propostas' => $propostas,
             'historico' => $historico,
         ]);
-    }
-
-    /**
-     * Retorna todos os guias (endpoint utilitário).
-     */
-    public function getAllGuias()
-    {
-        return Guia::all();
     }
 
     /**

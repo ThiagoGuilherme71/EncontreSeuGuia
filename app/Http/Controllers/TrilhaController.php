@@ -21,22 +21,6 @@ class TrilhaController extends Controller
     }
 
     /**
-     * Retorna todas as trilhas (endpoint utilitário).
-     */
-    public function getAllTrilhas()
-    {
-        return Trilha::all();
-    }
-
-    /**
-     * Retorna uma trilha pelo id (endpoint utilitário).
-     */
-    public function getTrilha($id)
-    {
-        return Trilha::where('id', $id)->first();
-    }
-
-    /**
      * Página pública da trilha: guias ativos, avaliações e aventuras.
      */
     public function exibir($id)

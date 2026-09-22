@@ -21,3 +21,10 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# Artefatos gerados que ja escaparam para commits anteriores
+/encontre_seu_guia
+/laravel
+/notes.gitignore
+/public/G*
+/database/*.sqlite

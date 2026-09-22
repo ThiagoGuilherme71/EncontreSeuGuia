@@ -14,9 +14,6 @@
         "vite": "^6.0.11"
     },
     "dependencies": {
-        "@fullcalendar/core": "^6.1.17",
-        "@fullcalendar/daygrid": "^6.1.17",
-        "@fullcalendar/interaction": "^6.1.17",
         "@headlessui/react": "^2.2.10",
         "@inertiajs/react": "^3.4.0",
         "@vitejs/plugin-react": "^4.7.0",
@@ -29,7 +26,6 @@
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
         "react-leaflet": "^5.0.0",
-        "sweetalert2": "^11.17.2",
         "tailwind-merge": "^3.6.0"
     }
 }

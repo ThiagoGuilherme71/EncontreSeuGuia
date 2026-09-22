@@ -11,13 +11,19 @@ use \App\Http\Controllers\ClienteController;
 
 //Login
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
-Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('/login', [LoginController::class, 'login'])
+    ->middleware('throttle:6,1')
+    ->name('login.submit');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 //SignUp for
 Route::get('/signup', [SignupController::class, 'showSignupForm'])->name('signup');
-Route::post('/signup', [SignupController::class, 'signup'])->name('signup.submit');
+Route::post('/signup', [SignupController::class, 'signup'])
+    ->middleware('throttle:6,1')
+    ->name('signup.submit');
 Route::get('/signup-guia', [SignupController::class, 'showGuiaSignupForm'])->name('signup.guia');
-Route::post('/signup-guia-submit', [SignupController::class, 'signupGuia'])->name('signup.guia.submit');
+Route::post('/signup-guia-submit', [SignupController::class, 'signupGuia'])
+    ->middleware('throttle:6,1')
+    ->name('signup.guia.submit');
 //guia
 Route::get('/guia-dash', [GuiaController::class, 'index'])->middleware('auth:guia')->name('guia-dash');
 
@@ -25,8 +31,6 @@ Route::get('/', [ClienteController::class, 'landingPage'])->name('landing-page')
 
 //trilha — público
 Route::get('/buscar-trilha', [TrilhaController::class, 'buscar'])->name('trilhas.buscar');
-Route::get('/get-all-trilhas/', [TrilhaController::class, 'getAllTrilhas'])->name('trilhas.getAll');
-Route::get('/get-trilhas/{id}', [TrilhaController::class, 'getTrilha'])->name('trilhas.get');
 
 //trilha — gestão (guia)
 Route::middleware('auth:guia')->group(function () {

@@ -523,12 +523,6 @@ class AuditoriaTest extends TestCase
      * PONTO DE ERRO ESPERADO: User::isGuia() consulta guias.user_id, coluna
      * inexistente, lancando QueryException em vez de retornar booleano.
      */
-    public function test_user_isguia_retorna_booleano(): void
-    {
-        $user = $this->novoUser();
-
-        $this->assertIsBool($user->isGuia());
-    }
 }
 
 /** Atalho para a constante de limite de fotos. */

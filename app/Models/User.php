@@ -36,14 +36,6 @@ class User extends Authenticatable
     ];
 
     /**
-     * Indica se este usuário também possui cadastro de guia.
-     */
-    public function isGuia()
-    {
-        return \DB::table('guias')->where('user_id', $this->id)->exists();
-    }
-
-    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
